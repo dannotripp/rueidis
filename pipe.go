@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"os"
 	"regexp"
@@ -1318,6 +1319,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	}
 
 	fmt.Printf("[SHR-570] -- DEBUG MESSAGE: Commands: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] -- DEBUG MESSAGE: Commands: %v\n", cmd.Commands())
 
 	resp := p.DoMulti(
 		ctx,
