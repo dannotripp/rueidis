@@ -1318,8 +1318,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		return newResult(entry.Wait(ctx))
 	}
 
-	fmt.Printf("[SHR-570] -- DEBUG MESSAGE: Commands: %v\n", cmd.Commands())
-	log.Printf("[SHR-570] -- DEBUG MESSAGE: Commands: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] -- LOG DEBUG MESSAGE: CLIENT: %v\n", cmd.Commands())
 
 	resp := p.DoMulti(
 		ctx,

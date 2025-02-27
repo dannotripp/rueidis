@@ -7,7 +7,6 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	"fmt"
 	"log"
 	"math"
 	"net"
@@ -382,7 +381,6 @@ type AuthCredentials struct {
 // the address does not enable cluster mode, the NewClient() will use single client instead.
 func NewClient(option ClientOption) (client Client, err error) {
 
-	fmt.Printf("[SHR-570] -- FMT DEBUG MESSAGE: CLIENT: %v\n", client)
 	log.Printf("[SHR-570] -- LOG DEBUG MESSAGE: CLIENT: %v\n", client)
 
 	if option.ReadBufferEachConn < 32 { // the buffer should be able to hold an int64 string at least
