@@ -7,6 +7,8 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
+	"fmt"
+	"log"
 	"math"
 	"net"
 	"runtime"
@@ -379,6 +381,10 @@ type AuthCredentials struct {
 // It will first try to connect as cluster client. If the len(ClientOption.InitAddress) == 1 and
 // the address does not enable cluster mode, the NewClient() will use single client instead.
 func NewClient(option ClientOption) (client Client, err error) {
+
+	fmt.Printf("[SHR-570] -- DEBUG MESSAGE: CLIENT: %v\n", client)
+	log.Printf("[SHR-570] -- DEBUG MESSAGE: CLIENT: %v\n", client)
+
 	if option.ReadBufferEachConn < 32 { // the buffer should be able to hold an int64 string at least
 		option.ReadBufferEachConn = DefaultReadBuffer
 	}
