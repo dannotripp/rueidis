@@ -856,6 +856,9 @@ func (p *pipe) AZ() string {
 }
 
 func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
+
+	log.Printf("[SHR-570] -- LOG DEBUG MESSAGE: METHOD: Do CLIENT: %v\n", cmd.Commands())
+
 	if err := ctx.Err(); err != nil {
 		return newErrResult(err)
 	}
@@ -1318,7 +1321,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		return newResult(entry.Wait(ctx))
 	}
 
-	log.Printf("[SHR-570] -- LOG DEBUG MESSAGE: CLIENT: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] -- LOG DEBUG MESSAGE: METHOD: DoCache CLIENT: %v\n", cmd.Commands())
 
 	resp := p.DoMulti(
 		ctx,
