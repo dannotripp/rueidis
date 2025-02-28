@@ -857,7 +857,7 @@ func (p *pipe) AZ() string {
 
 func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 
-	log.Printf("[SHR-570] -- LOG DEBUG MESSAGE: METHOD: Do CLIENT: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] FUNC: DO CMD: %v\n", cmd.Commands())
 
 	if err := ctx.Err(); err != nil {
 		return newErrResult(err)
