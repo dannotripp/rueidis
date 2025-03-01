@@ -1229,7 +1229,7 @@ func (p *pipe) DoMultiStream(ctx context.Context, pool *pool, multi ...Completed
 func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult) {
 
 	log.Println()
-	log.Printf("[SHR-570] S1. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+	// log.Printf("[SHR-570] S1. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 
 	if dlOk {
 		if p.timeout > 0 && !cmd.IsBlock() {
@@ -1246,7 +1246,7 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 		p.conn.SetDeadline(time.Time{})
 	}
 
-	log.Printf("[SHR-570] S2. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+	// log.Printf("[SHR-570] S2. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 
 	var msg RedisMessage
 	err := flushCmd(p.w, cmd.Commands())
