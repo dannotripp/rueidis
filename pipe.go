@@ -908,11 +908,11 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 		}
 		log.Printf("[SHR-570] 8.1. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 		resp = p.syncDo(dl, ok, cmd)
-		log.Printf("[SHR-570] RESP: %v\n", resp)
+		log.Printf("[SHR-570] 8.2 RESP: %v\n", resp)
 	} else {
 		log.Printf("[SHR-570] 9. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 		resp = newErrResult(p.Error())
-		log.Printf("[SHR-570] RESP: %v\n", resp)
+		log.Printf("[SHR-570] 9.2 RESP: %v\n", resp)
 	}
 	log.Printf("[SHR-570] 10. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	if left := atomic.AddInt32(&p.waits, -1); state == 0 && left != 0 {
@@ -921,7 +921,7 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 	atomic.AddInt32(&p.recvs, 1)
 	log.Printf("[SHR-570] 11. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	log.Printf("[SHR-570] 11.1. ERROR HERE?: RESP: %v \tFUNC: DO -- CMD: %v\n", resp, cmd.Commands())
-	log.Printf("[SHR-570] RESP: %v\n", resp)
+	log.Printf("[SHR-570] 11.2 RESP: %v\n", resp)
 	return resp
 
 queue:
@@ -929,19 +929,19 @@ queue:
 	ch := p.queue.PutOne(cmd)
 	if ctxCh := ctx.Done(); ctxCh == nil {
 		resp = <-ch
-		log.Printf("[SHR-570] RESP: %v\n", resp)
+		log.Printf("[SHR-570] 12.1 RESP: %v\n", resp)
 	} else {
 		select {
 		case resp = <-ch:
 		case <-ctxCh:
-			log.Printf("[SHR-570] RESP: %v\n", resp)
+			log.Printf("[SHR-570] 12.2 RESP: %v\n", resp)
 			goto abort
 		}
 	}
 	log.Printf("[SHR-570] 13. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	atomic.AddInt32(&p.waits, -1)
 	atomic.AddInt32(&p.recvs, 1)
-	log.Printf("[SHR-570] RESP: %v\n", resp)
+	log.Printf("[SHR-570] 13.1 RESP: %v\n", resp)
 	return resp
 abort:
 	log.Printf("[SHR-570] 14. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
