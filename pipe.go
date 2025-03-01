@@ -914,6 +914,7 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 	}
 	atomic.AddInt32(&p.recvs, 1)
 	log.Printf("[SHR-570] 11. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 11.1. ERROR HERE?: %v \tFUNC: DO -- CMD: %v\n", resp, cmd.Commands())
 	return resp
 
 queue:
