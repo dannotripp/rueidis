@@ -1251,7 +1251,7 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 	var msg RedisMessage
 	err := flushCmd(p.w, cmd.Commands())
 
-	log.Printf("[SHR-570] S3. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] S3. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
 
 	if err == nil {
 		log.Printf("[SHR-570] S4. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
