@@ -858,14 +858,14 @@ func (p *pipe) AZ() string {
 func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 
 	log.Printf("[SHR-570] FUNC: DO -- CMD: %v\n", cmd.Commands())
-	log.Printf("[SHR-570] 1. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 1. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 
 	if err := ctx.Err(); err != nil {
 		return newErrResult(err)
 	}
-	log.Printf("[SHR-570] 2. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 2. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	cmds.CompletedCS(cmd).Verify()
-	log.Printf("[SHR-570] 3. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 3. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	if cmd.IsBlock() {
 		atomic.AddInt32(&p.blcksig, 1)
 		defer func() {
@@ -874,23 +874,23 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 			}
 		}()
 	}
-	log.Printf("[SHR-570] 4. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 4. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	if cmd.NoReply() {
 		if p.version < 6 && p.r2psFn != nil {
 			return p._r2pipe().Do(ctx, cmd)
 		}
 	}
-	log.Printf("[SHR-570] 5. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 5. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	waits := atomic.AddInt32(&p.waits, 1) // if this is 1, and background worker is not started, no need to queue
 	state := atomic.LoadInt32(&p.state)
-	log.Printf("[SHR-570] 6. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 6. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	if state == 1 {
-		log.Printf("[SHR-570] 7.1. state == 1 goto queue FUNC: DO -- CMD: %v\n", cmd.Commands())
+		log.Printf("[SHR-570] 7.1. state == 1 goto queue \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 		goto queue
 	}
-	log.Printf("[SHR-570] 7.2. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 7.2. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	if state == 0 {
-		log.Printf("[SHR-570] 8. state == 0 FUNC: DO -- CMD: %v\n", cmd.Commands())
+		log.Printf("[SHR-570] 8. state == 0 \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 		if waits != 1 {
 			goto queue
 		}
@@ -905,19 +905,19 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 		}
 		resp = p.syncDo(dl, ok, cmd)
 	} else {
-		log.Printf("[SHR-570] 9. FUNC: DO -- CMD: %v\n", cmd.Commands())
+		log.Printf("[SHR-570] 9. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 		resp = newErrResult(p.Error())
 	}
-	log.Printf("[SHR-570] 10. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 10. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	if left := atomic.AddInt32(&p.waits, -1); state == 0 && left != 0 {
 		p.background()
 	}
 	atomic.AddInt32(&p.recvs, 1)
-	log.Printf("[SHR-570] 11. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 11. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	return resp
 
 queue:
-	log.Printf("[SHR-570] 12. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 12. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	ch := p.queue.PutOne(cmd)
 	if ctxCh := ctx.Done(); ctxCh == nil {
 		resp = <-ch
@@ -928,18 +928,18 @@ queue:
 			goto abort
 		}
 	}
-	log.Printf("[SHR-570] 13. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 13. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	atomic.AddInt32(&p.waits, -1)
 	atomic.AddInt32(&p.recvs, 1)
 	return resp
 abort:
-	log.Printf("[SHR-570] 14. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 14. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	go func(ch chan RedisResult) {
 		<-ch
 		atomic.AddInt32(&p.waits, -1)
 		atomic.AddInt32(&p.recvs, 1)
 	}(ch)
-	log.Printf("[SHR-570] 15. FUNC: DO -- CMD: %v\n", cmd.Commands())
+	log.Printf("[SHR-570] 15. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	return newErrResult(ctx.Err())
 }
 
