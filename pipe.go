@@ -906,6 +906,7 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 			p.background()
 			goto queue
 		}
+		log.Printf("[SHR-570] 8.1. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 		resp = p.syncDo(dl, ok, cmd)
 		log.Printf("[SHR-570] RESP: %v\n", resp)
 	} else {
