@@ -1256,7 +1256,11 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 	if err == nil {
 		log.Printf("[SHR-570] S4. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 		msg, err = syncRead(p.r)
-		log.Printf("[SHR-570] S5. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
+
+		// log the type of the message and the type of the error
+
+		log.Printf("[SHR-570] S4.1. \tFUNC: SYNCDO -- MSG: %v (type: %T), ERR: %v (type: %T)\n", msg, msg, err, err)
+
 	}
 	if err != nil {
 		log.Printf("[SHR-570] S6. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
