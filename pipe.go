@@ -1228,6 +1228,10 @@ func (p *pipe) DoMultiStream(ctx context.Context, pool *pool, multi ...Completed
 
 func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult) {
 
+
+	// log debug data for the pipe object p
+	log.Printf("[SHR-570] S0. \tFUNC: SYNCDO -- PIPE: %v\n", p)
+
 	log.Println()
 	// log.Printf("[SHR-570] S1. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 
