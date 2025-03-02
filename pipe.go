@@ -1232,6 +1232,10 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 	// log debug data for the pipe object p
 	log.Printf("[SHR-570] S0. \tFUNC: SYNCDO -- PIPE: %v\n", p)
 
+	// pretty print the pipe. here is the data: [SHR-570] S0. 	FUNC: SYNCDO -- PIPE: &{0x140003c8000 {<nil>} {0x10480fb70} {0x104aec1e0} 0x14000500000 0x140001fb440 0x140003c4060 0x140003ca000 0x140001fc460 <nil> 0x104814230 <nil> 0x14000115230 0x14000114750 0x14000115170 map[id:{<nil>  [] 263 58 [0 0 0 0 0 0 0]} mode:{<nil> standalone [] 0 36 [0 0 0 0 0 0 0]} modules:{<nil>  [] 0 42 [0 0 0 0 0 0 0]} proto:{<nil>  [] 3 58 [0 0 0 0 0 0 0]} role:{<nil> master [] 0 36 [0 0 0 0 0 0 0]} server:{<nil> redis [] 0 36 [0 0 0 0 0 0 0]} version:{<nil> 7.2.7 [] 0 36 [0 0 0 0 0 0 0]}] 10000000000 1000000000 0 {{} {{} 0} {{} {0 0}}} {{} {0 0}} 7 [0 0 0 0 0 0 0 0 0 0] 0 0 1 5 false false}
+	log.Printf("[SHR-570] S0. \tFUNC: SYNCDO -- PIPE INFO: %v\n", p.info)
+	log.Printf("[SHR-570] S0. \tFUNC: SYNCDO -- PIPE ERROR: %v\n", p.error)
+
 	log.Println()
 	// log.Printf("[SHR-570] S1. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 
