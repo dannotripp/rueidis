@@ -858,7 +858,7 @@ func (p *pipe) AZ() string {
 func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 
 	log.Printf("")
-	log.Printf("[SHR-570] FUNC: DO -- CMD: %v\n", cmd.Commands())
+	// log.Printf("[SHR-570] FUNC: DO -- CMD: %v\n", cmd.Commands())
 
 	// log.Printf("[SHR-570] 1. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 
@@ -871,7 +871,7 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 	if cmd.IsBlock() {
 		atomic.AddInt32(&p.blcksig, 1)
 		defer func() {
-			log.Printf("[SHR-570] RESP: %v\n", resp)
+			// log.Printf("[SHR-570] RESP: %v\n", resp)
 			if resp.err == nil {
 				atomic.AddInt32(&p.blcksig, -1)
 			}
@@ -1233,8 +1233,8 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 	log.Printf("[SHR-570] S0. \tFUNC: SYNCDO -- PIPE: %v\n", p)
 
 	// pretty print the pipe. here is the data: [SHR-570] S0. 	FUNC: SYNCDO -- PIPE: &{0x140003c8000 {<nil>} {0x10480fb70} {0x104aec1e0} 0x14000500000 0x140001fb440 0x140003c4060 0x140003ca000 0x140001fc460 <nil> 0x104814230 <nil> 0x14000115230 0x14000114750 0x14000115170 map[id:{<nil>  [] 263 58 [0 0 0 0 0 0 0]} mode:{<nil> standalone [] 0 36 [0 0 0 0 0 0 0]} modules:{<nil>  [] 0 42 [0 0 0 0 0 0 0]} proto:{<nil>  [] 3 58 [0 0 0 0 0 0 0]} role:{<nil> master [] 0 36 [0 0 0 0 0 0 0]} server:{<nil> redis [] 0 36 [0 0 0 0 0 0 0]} version:{<nil> 7.2.7 [] 0 36 [0 0 0 0 0 0 0]}] 10000000000 1000000000 0 {{} {{} 0} {{} {0 0}}} {{} {0 0}} 7 [0 0 0 0 0 0 0 0 0 0] 0 0 1 5 false false}
-	log.Printf("[SHR-570] S0. \tFUNC: SYNCDO -- PIPE INFO: %v\n", p.info)
-	log.Printf("[SHR-570] S0. \tFUNC: SYNCDO -- PIPE ERROR: %v\n", p.error)
+	log.Printf("[SHR-570] S0.1. \tFUNC: SYNCDO -- PIPE INFO: %v\n", p.info)
+	log.Printf("[SHR-570] S0.2. \tFUNC: SYNCDO -- PIPE ERROR: %v\n", p.error)
 
 	log.Println()
 	// log.Printf("[SHR-570] S1. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
@@ -1254,10 +1254,17 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 		p.conn.SetDeadline(time.Time{})
 	}
 
-	// log.Printf("[SHR-570] S2. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+	// log.Printf("[SHR-570] S1.1. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 
 	var msg RedisMessage
-	err := flushCmd(p.w, cmd.Commands())
+
+	// debug the syncRead function
+	msg, err := syncRead(p.r)
+	// log the type of the message and the type of the error
+	log.Printf("[SHR-570] S2. \tFUNC: SYNCDO -- MSG: %v (type: %T), ERR: %v (type: %T)\n", msg, msg, err, err)
+	// end of debug
+
+	err = flushCmd(p.w, cmd.Commands())
 
 	log.Printf("[SHR-570] S3. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
 
