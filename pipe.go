@@ -1261,6 +1261,70 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 	// log the pipe data
 	log.Printf("[SHR-570] S2. \tFUNC: SYNCDO --  PIPE: %v\n", p)
 
+	/*
+		// log the pipe data
+		    conn            net.Conn
+    error           atomic.Value
+    clhks           atomic.Value // closed hook, invoked after the conn is closed
+    pshks           atomic.Value // pubsub hook, registered by the SetPubSubHooks
+    queue           queue
+    cache           CacheStore
+    r               *bufio.Reader
+    w               *bufio.Writer
+    close           chan struct{}
+    onInvalidations func([]RedisMessage)
+    r2psFn          func() (p *pipe, err error) // func to build pipe for resp2 pubsub
+    r2pipe          *pipe                       // internal pipe for resp2 pubsub only
+    ssubs           *subs                       // pubsub smessage subscriptions
+    nsubs           *subs                       // pubsub  message subscriptions
+    psubs           *subs                       // pubsub pmessage subscriptions
+    info            map[string]RedisMessage
+    timeout         time.Duration
+    pinggap         time.Duration
+    maxFlushDelay   time.Duration
+    once            sync.Once
+    r2mu            sync.Mutex
+    version         int32
+    _               [10]int32
+    blcksig         int32
+    state           int32
+    waits           int32
+    recvs           int32
+    r2ps            bool // identify this pipe is used for resp2 pubsub or not
+    noNoDelay       bool
+	*/
+
+	log.Printf("[SHR-570] s2.1. \tFUNC: SYNCDO -- PIPE CONN: %v\n", p.conn)
+	log.Printf("[SHR-570] s2.2. \tFUNC: SYNCDO -- PIPE ERROR: %v\n", p.error)
+	log.Printf("[SHR-570] s2.3. \tFUNC: SYNCDO -- PIPE CLHKS: %v\n", p.clhks)
+	log.Printf("[SHR-570] s2.4. \tFUNC: SYNCDO -- PIPE PSHKS: %v\n", p.pshks)
+	log.Printf("[SHR-570] s2.5. \tFUNC: SYNCDO -- PIPE QUEUE: %v\n", p.queue)
+	log.Printf("[SHR-570] s2.6. \tFUNC: SYNCDO -- PIPE CACHE: %v\n", p.cache)
+	log.Printf("[SHR-570] s2.7. \tFUNC: SYNCDO -- PIPE R: %v\n", p.r)
+	log.Printf("[SHR-570] s2.8. \tFUNC: SYNCDO -- PIPE W: %v\n", p.w)
+	log.Printf("[SHR-570] s2.9. \tFUNC: SYNCDO -- PIPE CLOSE: %v\n", p.close)
+	log.Printf("[SHR-570] s2.10. \tFUNC: SYNCDO -- PIPE ONINVALIDATIONS: %v\n", p.onInvalidations)
+	log.Printf("[SHR-570] s2.11. \tFUNC: SYNCDO -- PIPE R2PSFN: %v\n", p.r2psFn)
+	log.Printf("[SHR-570] s2.12. \tFUNC: SYNCDO -- PIPE R2PIPE: %v\n", p.r2pipe)
+	log.Printf("[SHR-570] s2.13. \tFUNC: SYNCDO -- PIPE SSUBS: %v\n", p.ssubs)
+	log.Printf("[SHR-570] s2.14. \tFUNC: SYNCDO -- PIPE NSUBS: %v\n", p.nsubs)
+	log.Printf("[SHR-570] s2.15. \tFUNC: SYNCDO -- PIPE PSUBS: %v\n", p.psubs)
+	log.Printf("[SHR-570] s2.16. \tFUNC: SYNCDO -- PIPE INFO: %v\n", p.info)
+	log.Printf("[SHR-570] s2.17. \tFUNC: SYNCDO -- PIPE TIMEOUT: %v\n", p.timeout)
+	log.Printf("[SHR-570] s2.18. \tFUNC: SYNCDO -- PIPE PINGGAP: %v\n", p.pinggap)
+	log.Printf("[SHR-570] s2.19. \tFUNC: SYNCDO -- PIPE MAXFLUSHDELAY: %v\n", p.maxFlushDelay)
+	log.Printf("[SHR-570] s2.20. \tFUNC: SYNCDO -- PIPE ONCE: %v\n", p.once)
+	log.Printf("[SHR-570] s2.21. \tFUNC: SYNCDO -- PIPE R2MU: %v\n", p.r2mu)
+	log.Printf("[SHR-570] s2.22. \tFUNC: SYNCDO -- PIPE VERSION: %v\n", p.version)
+	log.Printf("[SHR-570] s2.23. \tFUNC: SYNCDO -- PIPE _: %v\n", p._)
+	log.Printf("[SHR-570] s2.24. \tFUNC: SYNCDO -- PIPE BLCKSIG: %v\n", p.blcksig)
+	log.Printf("[SHR-570] s2.25. \tFUNC: SYNCDO -- PIPE STATE: %v\n", p.state)
+	log.Printf("[SHR-570] s2.26. \tFUNC: SYNCDO -- PIPE WAITS: %v\n", p.waits)
+	log.Printf("[SHR-570] s2.27. \tFUNC: SYNCDO -- PIPE RECVS: %v\n", p.recvs)
+	log.Printf("[SHR-570] s2.28. \tFUNC: SYNCDO -- PIPE R2PS: %v\n", p.r2ps)
+	log.Printf("[SHR-570] s2.29. \tFUNC: SYNCDO -- PIPE NONODELAY: %v\n", p.noNoDelay)
+	
+
 	err := flushCmd(p.w, cmd.Commands())
 
 	log.Printf("[SHR-570] S3. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
