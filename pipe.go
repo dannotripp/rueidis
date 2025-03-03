@@ -1417,7 +1417,9 @@ next:
 		return m, err
 	}
 	log.Printf("[SHR-570] SR4. SYNC READ FUNC: \n")
-	log.Printf("[SHR-570] SR5. SYNC READ FUNC: M.TYP: %v\n", m.typ)
+	// log the type as byte, then log the type as string
+
+	log.Printf("[SHR-570] SR5. SYNC READ FUNC: M.TYP: %v, M: %v\n", m.typ, m)
 	if m.typ == '>' {
 		log.Printf("[SHR-570] SR6. SYNC READ FUNC: \n")
 		goto next
