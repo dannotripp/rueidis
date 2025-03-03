@@ -1242,11 +1242,11 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 
 
 	// log debug data for the pipe object p
-	log.Printf("[SHR-570] S0. \tFUNC: SYNCDO -- PIPE: %v\n", p)
+	// log.Printf("[SHR-570] S0. \tFUNC: SYNCDO -- PIPE: %v\n", p)
 
 	// pretty print the pipe. here is the data: [SHR-570] S0. 	FUNC: SYNCDO -- PIPE: &{0x140003c8000 {<nil>} {0x10480fb70} {0x104aec1e0} 0x14000500000 0x140001fb440 0x140003c4060 0x140003ca000 0x140001fc460 <nil> 0x104814230 <nil> 0x14000115230 0x14000114750 0x14000115170 map[id:{<nil>  [] 263 58 [0 0 0 0 0 0 0]} mode:{<nil> standalone [] 0 36 [0 0 0 0 0 0 0]} modules:{<nil>  [] 0 42 [0 0 0 0 0 0 0]} proto:{<nil>  [] 3 58 [0 0 0 0 0 0 0]} role:{<nil> master [] 0 36 [0 0 0 0 0 0 0]} server:{<nil> redis [] 0 36 [0 0 0 0 0 0 0]} version:{<nil> 7.2.7 [] 0 36 [0 0 0 0 0 0 0]}] 10000000000 1000000000 0 {{} {{} 0} {{} {0 0}}} {{} {0 0}} 7 [0 0 0 0 0 0 0 0 0 0] 0 0 1 5 false false}
-	log.Printf("[SHR-570] S0.1. \tFUNC: SYNCDO -- PIPE INFO: %v\n", p.info)
-	log.Printf("[SHR-570] S0.2. \tFUNC: SYNCDO -- PIPE ERROR: %v\n", p.error)
+	// log.Printf("[SHR-570] S0.1. \tFUNC: SYNCDO -- PIPE INFO: %v\n", p.info)
+	// log.Printf("[SHR-570] S0.2. \tFUNC: SYNCDO -- PIPE ERROR: %v\n", p.error)
 
 	log.Println()
 	// log.Printf("[SHR-570] S1. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
@@ -1305,30 +1305,30 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 
 	err := flushCmd(p.w, cmd.Commands())
 
-	log.Printf("[SHR-570] S3. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
+	// log.Printf("[SHR-570] S3. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
 
 	if err == nil {
-		log.Printf("[SHR-570] S4. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		// log.Printf("[SHR-570] S4. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 		msg, err = syncRead(p.r)
 
 		// log the type of the message and the type of the error
-		log.Printf("[SHR-570] S5. \tFUNC: SYNCDO -- MSG: %v (type: %T), ERR: %v (type: %T)\n", msg, msg, err, err)
+		// log.Printf("[SHR-570] S5. \tFUNC: SYNCDO -- MSG: %v (type: %T), ERR: %v (type: %T)\n", msg, msg, err, err)
 
 	}
 	if err != nil {
-		log.Printf("[SHR-570] S6. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		// log.Printf("[SHR-570] S6. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 		if dlOk && errors.Is(err, os.ErrDeadlineExceeded) {
 			err = context.DeadlineExceeded
 		}
-		log.Printf("[SHR-570] S7. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		// log.Printf("[SHR-570] S7. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 		p.error.CompareAndSwap(nil, &errs{error: err})
-		log.Printf("[SHR-570] S8. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		// log.Printf("[SHR-570] S8. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 		p.conn.Close()
-		log.Printf("[SHR-570] S9. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		// log.Printf("[SHR-570] S9. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 		p.background() // start the background worker to clean up goroutines
-		log.Printf("[SHR-570] S10. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		// log.Printf("[SHR-570] S10. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
 	}
-	log.Printf("[SHR-570] S11. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
+	// log.Printf("[SHR-570] S11. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
 	return newResult(msg, err)
 }
 
