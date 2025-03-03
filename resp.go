@@ -308,7 +308,17 @@ func readNextMessage(i *bufio.Reader) (m RedisMessage, err error) {
 		}
 		log.Printf("[SHR-570] RNM10. READ NEXT MESSAGE FUNC: ATTRS: %v\n", attrs)
 		m.attrs = attrs
-		log.Printf("[SHR-570] RNM11. READ NEXT MESSAGE FUNC: M: %v\n", m)
+
+		/*
+		type RedisMessage struct {
+    attrs   *RedisMessage
+    string  string
+    values  []RedisMessage
+    integer int64
+    typ     byte
+    ttl     [7]byte
+}*/
+		log.Printf("[SHR-570] RNM11. READ NEXT MESSAGE FUNC: M.ATTRS: %v\n M.STRING: %v\n M.VALUES: %v\n M.INTEGER: %v\n M.TYP: %v\n M.TTL: %v\n", m.attrs, m.string, m.values, m.integer, m.typ, m.ttl)
 		return m, nil
 	}
 }
