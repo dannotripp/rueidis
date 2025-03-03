@@ -280,6 +280,7 @@ func readNextMessage(i *bufio.Reader) (m RedisMessage, err error) {
 	for {
 		log.Printf("[SHR-570] RNM3. READ NEXT MESSAGE FUNC: \n")
 		if typ, err = i.ReadByte(); err != nil {
+			log.Printf("[SHR-570] RNM3.1. READ NEXT MESSAGE FUNC: ERR: %v\n", err)
 			return RedisMessage{}, err
 		}
 		log.Printf("[SHR-570] RNM4. READ NEXT MESSAGE FUNC: \n")
@@ -287,9 +288,9 @@ func readNextMessage(i *bufio.Reader) (m RedisMessage, err error) {
 		if fn == nil {
 			return RedisMessage{}, errors.New(unknownMessageType + strconv.Itoa(int(typ)))
 		}
-		log.Printf("[SHR-570] RNM5. READ NEXT MESSAGE FUNC: \n")
+		log.Printf("[SHR-570] RNM5. READ NEXT MESSAGE FUNC: FN: %v\n", fn)
 		if m, err = fn(i); err != nil {
-			log.Printf("[SHR-570] RNM6. READ NEXT MESSAGE FUNC: \n")
+			log.Printf("[SHR-570] RNM6. READ NEXT MESSAGE FUNC: m: %v, err: %v\n", m, err)
 			if err == errOldNull {
 				return RedisMessage{typ: typeNull}, nil
 			}
@@ -299,13 +300,13 @@ func readNextMessage(i *bufio.Reader) (m RedisMessage, err error) {
 		log.Printf("[SHR-570] RNM8. READ NEXT MESSAGE FUNC: \n")
 		m.typ = typ
 		if m.typ == typeAttribute { // handle the attributes
-			log.Printf("[SHR-570] RNM9. READ NEXT MESSAGE FUNC: \n")
+			log.Printf("[SHR-570] RNM9. READ NEXT MESSAGE FUNC: M.TYP: %v\n", m.typ)
 			a := m     // clone the original m first, and then take address of the clone
 			attrs = &a // to avoid go compiler allocating the m on heap which causing worse performance.
 			m = RedisMessage{}
 			continue
 		}
-		log.Printf("[SHR-570] RNM10. READ NEXT MESSAGE FUNC: \n")
+		log.Printf("[SHR-570] RNM10. READ NEXT MESSAGE FUNC: ATTRS: %v\n", attrs)
 		m.attrs = attrs
 		return m, nil
 	}
