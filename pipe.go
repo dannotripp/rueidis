@@ -1258,13 +1258,10 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 
 	var msg RedisMessage
 
-	// debug the syncRead function
-	msg, err := syncRead(p.r)
-	// log the type of the message and the type of the error
-	log.Printf("[SHR-570] S2. \tFUNC: SYNCDO -- MSG: %v (type: %T), ERR: %v (type: %T)\n", msg, msg, err, err)
-	// end of debug
+	// log the pipe data
+	log.Printf("[SHR-570] S2. \tFUNC: SYNCDO --  PIPE: %v\n", p)
 
-	err = flushCmd(p.w, cmd.Commands())
+	err := flushCmd(p.w, cmd.Commands())
 
 	log.Printf("[SHR-570] S3. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
 
