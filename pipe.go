@@ -1411,16 +1411,17 @@ abort:
 func syncRead(r *bufio.Reader) (m RedisMessage, err error) {
 	log.Printf("[SHR-570] SR1. SYNC READ FUNC: \n")
 next:
+	log.Printf("[SHR-570] SR2. SYNC READ FUNC: \n")
 	if m, err = readNextMessage(r); err != nil {
-		log.Printf("[SHR-570] SR2. SYNC READ FUNC: \n")
+		log.Printf("[SHR-570] SR3. SYNC READ FUNC: \n")
 		return m, err
 	}
-	log.Printf("[SHR-570] SR3. SYNC READ FUNC: \n")
+	log.Printf("[SHR-570] SR4. SYNC READ FUNC: \n")
 	if m.typ == '>' {
-		log.Printf("[SHR-570] SR4. SYNC READ FUNC: \n")
+		log.Printf("[SHR-570] SR5. SYNC READ FUNC: \n")
 		goto next
 	}
-	log.Printf("[SHR-570] SR5. SYNC READ FUNC: \n")
+	log.Printf("[SHR-570] SR6. SYNC READ FUNC: \n")
 	return m, nil
 }
 
