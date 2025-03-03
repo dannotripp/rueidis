@@ -888,12 +888,12 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 	state := atomic.LoadInt32(&p.state)
 	// log.Printf("[SHR-570] 6. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	if state == 1 {
-		log.Printf("[SHR-570] 7.1. state == 1 goto queue \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+		// log.Printf("[SHR-570] 7.1. state == 1 goto queue \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 		goto queue
 	}
-	log.Printf("[SHR-570] 7.2. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	// log.Printf("[SHR-570] 7.2. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	if state == 0 {
-		log.Printf("[SHR-570] 8. state == 0 \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+		// log.Printf("[SHR-570] 8. state == 0 \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 		if waits != 1 {
 			goto queue
 		}
@@ -906,9 +906,9 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 			p.background()
 			goto queue
 		}
-		log.Printf("[SHR-570] 8.1. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+		// log.Printf("[SHR-570] 8.1. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 		resp = p.syncDo(dl, ok, cmd)
-		log.Printf("[SHR-570] 8.2 RESP: %v\n", resp)
+		// log.Printf("[SHR-570] 8.2 RESP: %v\n", resp)
 	} else {
 		// log.Printf("[SHR-570] 9. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 		resp = newErrResult(p.Error())
