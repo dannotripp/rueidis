@@ -289,6 +289,8 @@ func readNextMessage(i *bufio.Reader) (m RedisMessage, err error) {
 			return RedisMessage{}, errors.New(unknownMessageType + strconv.Itoa(int(typ)))
 		}
 		log.Printf("[SHR-570] RNM5. READ NEXT MESSAGE FUNC: FN: %v\n", fn)
+		// log the contents of thie fn ptr
+		// log.Printf("[SHR-570] RNM5.1. READ NEXT MESSAGE FUNC: FN: %v\n", fn)
 		if m, err = fn(i); err != nil {
 			log.Printf("[SHR-570] RNM6. READ NEXT MESSAGE FUNC: m: %v, err: %v\n", m, err)
 			if err == errOldNull {
