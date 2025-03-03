@@ -1417,11 +1417,12 @@ next:
 		return m, err
 	}
 	log.Printf("[SHR-570] SR4. SYNC READ FUNC: \n")
+	log.Printf("[SHR-570] SR5. SYNC READ FUNC: M.TYP: %v\n", m.typ)
 	if m.typ == '>' {
-		log.Printf("[SHR-570] SR5. SYNC READ FUNC: \n")
+		log.Printf("[SHR-570] SR6. SYNC READ FUNC: \n")
 		goto next
 	}
-	log.Printf("[SHR-570] SR6. SYNC READ FUNC: \n")
+	log.Printf("[SHR-570] SR7. SYNC READ FUNC: \n")
 	return m, nil
 }
 
