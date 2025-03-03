@@ -858,22 +858,6 @@ func (p *pipe) AZ() string {
 func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 
 	log.Printf("")
-	// log.Printf("[SHR-570] FUNC: DO -- CMD: %v\n", cmd.Commands())
-	/*
-	func (c *cmds.Completed) Commands() []string
-	func (c *cmds.Completed) IsBlock() bool
-	func (c *cmds.Completed) IsEmpty() bool
-	func (c *cmds.Completed) IsOptIn() bool
-	func (c *cmds.Completed) IsPipe() bool
-	func (c *cmds.Completed) IsReadOnly() bool
-	func (c *cmds.Completed) IsUnsub() bool
-	func (c *cmds.Completed) IsWrite() bool
-	func (c *cmds.Completed) NoReply() bool
-	func (c cmds.Completed) Pin() cmds.Completed
-	func (c cmds.Completed) SetSlot(key string) cmds.Completed
-	func (c *cmds.Completed) Slot() uint16
-	func (c cmds.Completed) ToPipe() cmds.Completed
-	*/
 	log.Printf("[SHR-570] 0. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	log.Printf("[SHR-570] 0.1. \tFUNC: DO -- CMD.IsBlock: %v\n", cmd.IsBlock())
 	log.Printf("[SHR-570] 0.2. \tFUNC: DO -- CMD.IsEmpty: %v\n", cmd.IsEmpty())
