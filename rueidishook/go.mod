@@ -8,8 +8,8 @@ replace (
 )
 
 require (
-	github.com/dannotripp/rueidis v1.0.55
-	github.com/dannotripp/rueidis/mock v1.0.55
+	github.com/dannotripp/rueidis v0.0.0-20250303054856-527df373e22b
+	github.com/dannotripp/rueidis/mock v0.0.0-20250303054856-527df373e22b
 	go.uber.org/mock v0.5.0
 )
 

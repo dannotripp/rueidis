@@ -9,8 +9,8 @@ replace github.com/dannotripp/rueidis/mock => ../mock
 require (
 	github.com/onsi/ginkgo/v2 v2.22.2
 	github.com/onsi/gomega v1.36.2
-	github.com/dannotripp/rueidis v1.0.55
-	github.com/dannotripp/rueidis/mock v1.0.55
+	github.com/dannotripp/rueidis v0.0.0-20250303054856-527df373e22b
+	github.com/dannotripp/rueidis/mock v0.0.0-20250303054856-527df373e22b
 	go.uber.org/mock v0.5.0
 )
 
