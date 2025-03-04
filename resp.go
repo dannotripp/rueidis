@@ -272,44 +272,30 @@ func writeN(o *bufio.Writer, id byte, n int) (err error) {
 }
 
 func readNextMessage(i *bufio.Reader) (m RedisMessage, err error) {
-	// log.Printf("[SHR-570] RNM1. READ NEXT MESSAGE FUNC: \n")
 	var attrs *RedisMessage
 	var typ byte
-	// log.Printf("[SHR-570] RNM2. READ NEXT MESSAGE FUNC: \n")
 	for {
-		// log.Printf("[SHR-570] RNM3. READ NEXT MESSAGE FUNC: \n")
 		if typ, err = i.ReadByte(); err != nil {
-			// log.Printf("[SHR-570] RNM3.1. READ NEXT MESSAGE FUNC: ERR: %v\n", err)
 			return RedisMessage{}, err
 		}
-		// log.Printf("[SHR-570] RNM4. READ NEXT MESSAGE FUNC: \n")
 		fn := readers[typ]
 		if fn == nil {
 			return RedisMessage{}, errors.New(unknownMessageType + strconv.Itoa(int(typ)))
 		}
-		// log.Printf("[SHR-570] RNM5. READ NEXT MESSAGE FUNC: FN: %v\n", fn)
-		// log the contents of thie fn ptr
-		// log.Printf("[SHR-570] RNM5.1. READ NEXT MESSAGE FUNC: FN: %v\n", fn)
 		if m, err = fn(i); err != nil {
-			// log.Printf("[SHR-570] RNM6. READ NEXT MESSAGE FUNC: m: %v, err: %v\n", m, err)
 			if err == errOldNull {
 				return RedisMessage{typ: typeNull}, nil
 			}
-			// log.Printf("[SHR-570] RNM7. READ NEXT MESSAGE FUNC: \n")
 			return RedisMessage{}, err
 		}
-		// log.Printf("[SHR-570] RNM8. READ NEXT MESSAGE FUNC: \nM.ATTRS: %v\n M.STRING: %v\n M.VALUES: %v\n M.INTEGER: %v\n M.TYP: %v\n M.TTL: %v\n", m.attrs, m.string, m.values, m.integer, m.typ, m.ttl)
 		m.typ = typ
 		if m.typ == typeAttribute { // handle the attributes
-			// log.Printf("[SHR-570] RNM9. READ NEXT MESSAGE FUNC: M.TYP: %v\n", m.typ)
 			a := m     // clone the original m first, and then take address of the clone
 			attrs = &a // to avoid go compiler allocating the m on heap which causing worse performance.
 			m = RedisMessage{}
 			continue
 		}
-		// log.Printf("[SHR-570] RNM10. READ NEXT MESSAGE FUNC: ATTRS: %v\n", attrs)
 		m.attrs = attrs
-		// log.Printf("[SHR-570] RNM11. READ NEXT MESSAGE FUNC: \nM.ATTRS: %v\n M.STRING: %v\n M.VALUES: %v\n M.INTEGER: %v\n M.TYP: %v\n M.TTL: %v\n", m.attrs, m.string, m.values, m.integer, m.typ, m.ttl)
 		return m, nil
 	}
 }

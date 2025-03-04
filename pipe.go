@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"os"
 	"regexp"
@@ -857,55 +856,35 @@ func (p *pipe) AZ() string {
 
 func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 
-	log.Printf("")
-	log.Printf("[SHR-570] 0. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
-	log.Printf("[SHR-570] 0.1. \tFUNC: DO -- CMD.IsBlock: %v\n", cmd.IsBlock())
-	log.Printf("[SHR-570] 0.2. \tFUNC: DO -- CMD.IsEmpty: %v\n", cmd.IsEmpty())
-	log.Printf("[SHR-570] 0.3. \tFUNC: DO -- CMD.IsOptIn: %v\n", cmd.IsOptIn())
-	log.Printf("[SHR-570] 0.4. \tFUNC: DO -- CMD.IsPipe: %v\n", cmd.IsPipe())
-	log.Printf("[SHR-570] 0.5. \tFUNC: DO -- CMD.IsReadOnly: %v\n", cmd.IsReadOnly())
-	log.Printf("[SHR-570] 0.6. \tFUNC: DO -- CMD.IsUnsub: %v\n", cmd.IsUnsub())
-	log.Printf("[SHR-570] 0.7. \tFUNC: DO -- CMD.IsWrite: %v\n", cmd.IsWrite())
-	log.Printf("[SHR-570] 0.8. \tFUNC: DO -- CMD.NoReply: %v\n", cmd.NoReply())
-	log.Printf("[SHR-570] 0.9. \tFUNC: DO -- CMD.Pin: %v\n", cmd.Pin())
-	log.Printf("[SHR-570] 0.10. \tFUNC: DO -- CMD.SetSlot: %v\n", cmd.SetSlot("key"))
-	log.Printf("[SHR-570] 0.11. \tFUNC: DO -- CMD.Slot: %v\n", cmd.Slot())
-	log.Printf("[SHR-570] 0.12. \tFUNC: DO -- CMD.ToPipe: %v\n", cmd.ToPipe())
-
-	// log.Printf("[SHR-570] 1. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
-
 	if err := ctx.Err(); err != nil {
 		return newErrResult(err)
 	}
-	// log.Printf("[SHR-570] 2. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	cmds.CompletedCS(cmd).Verify()
-	// log.Printf("[SHR-570] 3. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
 	if cmd.IsBlock() {
 		atomic.AddInt32(&p.blcksig, 1)
 		defer func() {
-			// log.Printf("[SHR-570] RESP: %v\n", resp)
 			if resp.err == nil {
 				atomic.AddInt32(&p.blcksig, -1)
 			}
 		}()
 	}
-	// log.Printf("[SHR-570] 4. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	
 	if cmd.NoReply() {
 		if p.version < 6 && p.r2psFn != nil {
 			return p._r2pipe().Do(ctx, cmd)
 		}
 	}
-	// log.Printf("[SHR-570] 5. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	
 	waits := atomic.AddInt32(&p.waits, 1) // if this is 1, and background worker is not started, no need to queue
 	state := atomic.LoadInt32(&p.state)
-	// log.Printf("[SHR-570] 6. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	
 	if state == 1 {
-		// log.Printf("[SHR-570] 7.1. state == 1 goto queue \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+		
 		goto queue
 	}
-	// log.Printf("[SHR-570] 7.2. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	
 	if state == 0 {
-		// log.Printf("[SHR-570] 8. state == 0 \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+		
 		if waits != 1 {
 			goto queue
 		}
@@ -918,51 +897,51 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 			p.background()
 			goto queue
 		}
-		// log.Printf("[SHR-570] 8.1. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+		
 		resp = p.syncDo(dl, ok, cmd)
-		// log.Printf("[SHR-570] 8.2 RESP: %v\n", resp)
+		
 	} else {
-		// log.Printf("[SHR-570] 9. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+		
 		resp = newErrResult(p.Error())
-		// log.Printf("[SHR-570] 9.2 RESP: %v\n", resp)
+		
 	}
-	// log.Printf("[SHR-570] 10. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	
 	if left := atomic.AddInt32(&p.waits, -1); state == 0 && left != 0 {
 		p.background()
 	}
 	atomic.AddInt32(&p.recvs, 1)
-	// log.Printf("[SHR-570] 11. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
-	// log.Printf("[SHR-570] 11.1. ERROR HERE?: RESP: %v \tFUNC: DO -- CMD: %v\n", resp, cmd.Commands())
-	// log.Printf("[SHR-570] 11.2 RESP: %v\n", resp)
+	
+	
+	
 	return resp
 
 queue:
-	log.Printf("[SHR-570] 12. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	
 	ch := p.queue.PutOne(cmd)
 	if ctxCh := ctx.Done(); ctxCh == nil {
 		resp = <-ch
-		log.Printf("[SHR-570] 12.1 RESP: %v\n", resp)
+		
 	} else {
 		select {
 		case resp = <-ch:
 		case <-ctxCh:
-			log.Printf("[SHR-570] 12.2 RESP: %v\n", resp)
+			
 			goto abort
 		}
 	}
-	log.Printf("[SHR-570] 13. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	
 	atomic.AddInt32(&p.waits, -1)
 	atomic.AddInt32(&p.recvs, 1)
-	log.Printf("[SHR-570] 13.1 RESP: %v\n", resp)
+	
 	return resp
 abort:
-	log.Printf("[SHR-570] 14. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	
 	go func(ch chan RedisResult) {
 		<-ch
 		atomic.AddInt32(&p.waits, -1)
 		atomic.AddInt32(&p.recvs, 1)
 	}(ch)
-	log.Printf("[SHR-570] 15. \tFUNC: DO -- CMD: %v\n", cmd.Commands())
+	
 	return newErrResult(ctx.Err())
 }
 
@@ -1239,18 +1218,7 @@ func (p *pipe) DoMultiStream(ctx context.Context, pool *pool, multi ...Completed
 }
 
 func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult) {
-
-
-	// log debug data for the pipe object p
-	// log.Printf("[SHR-570] S0. \tFUNC: SYNCDO -- PIPE: %v\n", p)
-
-	// pretty print the pipe. here is the data: [SHR-570] S0. 	FUNC: SYNCDO -- PIPE: &{0x140003c8000 {<nil>} {0x10480fb70} {0x104aec1e0} 0x14000500000 0x140001fb440 0x140003c4060 0x140003ca000 0x140001fc460 <nil> 0x104814230 <nil> 0x14000115230 0x14000114750 0x14000115170 map[id:{<nil>  [] 263 58 [0 0 0 0 0 0 0]} mode:{<nil> standalone [] 0 36 [0 0 0 0 0 0 0]} modules:{<nil>  [] 0 42 [0 0 0 0 0 0 0]} proto:{<nil>  [] 3 58 [0 0 0 0 0 0 0]} role:{<nil> master [] 0 36 [0 0 0 0 0 0 0]} server:{<nil> redis [] 0 36 [0 0 0 0 0 0 0]} version:{<nil> 7.2.7 [] 0 36 [0 0 0 0 0 0 0]}] 10000000000 1000000000 0 {{} {{} 0} {{} {0 0}}} {{} {0 0}} 7 [0 0 0 0 0 0 0 0 0 0] 0 0 1 5 false false}
-	// log.Printf("[SHR-570] S0.1. \tFUNC: SYNCDO -- PIPE INFO: %v\n", p.info)
-	// log.Printf("[SHR-570] S0.2. \tFUNC: SYNCDO -- PIPE ERROR: %v\n", p.error)
-
-	log.Println()
-	// log.Printf("[SHR-570] S1. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
-
+	
 	if dlOk {
 		if p.timeout > 0 && !cmd.IsBlock() {
 			defaultDeadline := time.Now().Add(p.timeout)
@@ -1266,69 +1234,29 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 		p.conn.SetDeadline(time.Time{})
 	}
 
-	// log.Printf("[SHR-570] S1.1. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
-
-	var msg RedisMessage
-
-	// // log the pipe data
-	// log.Printf("[SHR-570] S2. \tFUNC: SYNCDO --  PIPE: %v\n", p)
-
-	// log.Printf("[SHR-570] s2.1. \tFUNC: SYNCDO -- PIPE CONN: %v\n", p.conn)
-	// log.Printf("[SHR-570] s2.2. \tFUNC: SYNCDO -- PIPE ERROR: %v\n", p.error)
-	// log.Printf("[SHR-570] s2.3. \tFUNC: SYNCDO -- PIPE CLHKS: %v\n", p.clhks)
-	// log.Printf("[SHR-570] s2.4. \tFUNC: SYNCDO -- PIPE PSHKS: %v\n", p.pshks)
-	// // log.Printf("[SHR-570] s2.5. \tFUNC: SYNCDO -- PIPE QUEUE: %v\n", p.queue)
-	// log.Printf("[SHR-570] s2.6. \tFUNC: SYNCDO -- PIPE CACHE: %v\n", p.cache)
-	// // log.Printf("[SHR-570] s2.7. \tFUNC: SYNCDO -- PIPE R: %v\n", p.r)
-	// // log.Printf("[SHR-570] s2.8. \tFUNC: SYNCDO -- PIPE W: %v\n", p.w)
-	// log.Printf("[SHR-570] s2.9. \tFUNC: SYNCDO -- PIPE CLOSE: %v\n", p.close)
-	// log.Printf("[SHR-570] s2.10. \tFUNC: SYNCDO -- PIPE ONINVALIDATIONS: %v\n", p.onInvalidations)
-	// log.Printf("[SHR-570] s2.11. \tFUNC: SYNCDO -- PIPE R2PSFN: %v\n", p.r2psFn)
-	// log.Printf("[SHR-570] s2.12. \tFUNC: SYNCDO -- PIPE R2PIPE: %v\n", p.r2pipe)
-	// log.Printf("[SHR-570] s2.13. \tFUNC: SYNCDO -- PIPE SSUBS: %v\n", p.ssubs)
-	// log.Printf("[SHR-570] s2.14. \tFUNC: SYNCDO -- PIPE NSUBS: %v\n", p.nsubs)
-	// log.Printf("[SHR-570] s2.15. \tFUNC: SYNCDO -- PIPE PSUBS: %v\n", p.psubs)
-	// log.Printf("[SHR-570] s2.16. \tFUNC: SYNCDO -- PIPE INFO: %v\n", p.info)
-	// log.Printf("[SHR-570] s2.17. \tFUNC: SYNCDO -- PIPE TIMEOUT: %v\n", p.timeout)
-	// log.Printf("[SHR-570] s2.18. \tFUNC: SYNCDO -- PIPE PINGGAP: %v\n", p.pinggap)
-	// log.Printf("[SHR-570] s2.19. \tFUNC: SYNCDO -- PIPE MAXFLUSHDELAY: %v\n", p.maxFlushDelay)
-	// log.Printf("[SHR-570] s2.20. \tFUNC: SYNCDO -- PIPE ONCE: %v\n", p.once)
-	// log.Printf("[SHR-570] s2.21. \tFUNC: SYNCDO -- PIPE R2MU: %v\n", p.r2mu)
-	// log.Printf("[SHR-570] s2.22. \tFUNC: SYNCDO -- PIPE VERSION: %v\n", p.version)
-	// log.Printf("[SHR-570] s2.24. \tFUNC: SYNCDO -- PIPE BLCKSIG: %v\n", p.blcksig)
-	// log.Printf("[SHR-570] s2.25. \tFUNC: SYNCDO -- PIPE STATE: %v\n", p.state)
-	// log.Printf("[SHR-570] s2.26. \tFUNC: SYNCDO -- PIPE WAITS: %v\n", p.waits)
-	// log.Printf("[SHR-570] s2.27. \tFUNC: SYNCDO -- PIPE RECVS: %v\n", p.recvs)
-	// log.Printf("[SHR-570] s2.28. \tFUNC: SYNCDO -- PIPE R2PS: %v\n", p.r2ps)
-	// log.Printf("[SHR-570] s2.29. \tFUNC: SYNCDO -- PIPE NONODELAY: %v\n", p.noNoDelay)
 	
 
+	var msg RedisMessage
 	err := flushCmd(p.w, cmd.Commands())
-
-	// log.Printf("[SHR-570] S3. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
-
 	if err == nil {
-		// log.Printf("[SHR-570] S4. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
-		msg, err = syncRead(p.r)
-
-		// log the type of the message and the type of the error
-		// log.Printf("[SHR-570] S5. \tFUNC: SYNCDO -- MSG: %v (type: %T), ERR: %v (type: %T)\n", msg, msg, err, err)
+		
+		msg, err = syncRead(p.r)		
 
 	}
 	if err != nil {
-		// log.Printf("[SHR-570] S6. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		
 		if dlOk && errors.Is(err, os.ErrDeadlineExceeded) {
 			err = context.DeadlineExceeded
 		}
-		// log.Printf("[SHR-570] S7. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		
 		p.error.CompareAndSwap(nil, &errs{error: err})
-		// log.Printf("[SHR-570] S8. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		
 		p.conn.Close()
-		// log.Printf("[SHR-570] S9. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		
 		p.background() // start the background worker to clean up goroutines
-		// log.Printf("[SHR-570] S10. \tFUNC: SYNCDO -- CMD: %v\n", cmd.Commands())
+		
 	}
-	// log.Printf("[SHR-570] S11. \tFUNC: SYNCDO -- MSG: %v, ERR: %v\n", msg, err)
+	
 	return newResult(msg, err)
 }
 
@@ -1388,22 +1316,14 @@ abort:
 }
 
 func syncRead(r *bufio.Reader) (m RedisMessage, err error) {
-	// log.Printf("[SHR-570] SR1. SYNC READ FUNC: \n")
+	
 next:
-	// log.Printf("[SHR-570] SR2. SYNC READ FUNC: \n")
 	if m, err = readNextMessage(r); err != nil {
-		// log.Printf("[SHR-570] SR3. SYNC READ FUNC: \n")
 		return m, err
 	}
-	// log.Printf("[SHR-570] SR4. SYNC READ FUNC: \n")
-	// log the type as byte, then log the type as string
-
-	// log.Printf("[SHR-570] SR5. SYNC READ FUNC: M.TYP: %v, %v\n", m.typ, string(m.typ))
 	if m.typ == '>' {
-		// log.Printf("[SHR-570] SR6. SYNC READ FUNC: \n")
 		goto next
 	}
-	// log.Printf("[SHR-570] SR7. SYNC READ FUNC: \n")
 	return m, nil
 }
 
@@ -1425,7 +1345,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		return newResult(entry.Wait(ctx))
 	}
 
-	log.Printf("[SHR-570] -- LOG DEBUG MESSAGE: METHOD: DoCache CLIENT: %v\n", cmd.Commands())
+	
 
 	resp := p.DoMulti(
 		ctx,
