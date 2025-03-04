@@ -7,7 +7,6 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	"log"
 	"math"
 	"net"
 	"runtime"
