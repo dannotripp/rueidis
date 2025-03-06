@@ -1348,7 +1348,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 
 	resp := p.DoMulti(
 		ctx,
-		//cmds.OptInCmd,
+		cmds.OptInCmd,
 		cmds.MultiCmd,
 		cmds.NewCompleted([]string{"PTTL", ck}),
 		Completed(cmd),
@@ -1359,11 +1359,12 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		log.Printf("[SHR-570] DOCACHE() RESP[%d]: %v", i, r)
 	}
 	defer resultsp.Put(resp)
-	exec, err := resp.s[4-1].ToArray()
+	exec, err := resp.s[4].ToArray()
+	log.Printf("[SHR-570] DOCACHE() EXEC: %v ERR: %v", exec, err)
 	if err != nil {
 		if _, ok := err.(*RedisError); ok {
 			err = ErrDoCacheAborted
-			if preErr := resp.s[3-1].Error(); preErr != nil { // if {cmd} get a RedisError
+			if preErr := resp.s[3].Error(); preErr != nil { // if {cmd} get a RedisError
 				if _, ok := preErr.(*RedisError); ok {
 					err = preErr
 				}
@@ -1372,6 +1373,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		p.cache.Cancel(ck, cc, err)
 		return newErrResult(err)
 	}
+	log.Printf("[SHR-570] DOCACHE() EXEC[1]: %v", exec[1])
 	return newResult(exec[1], nil)
 }
 
