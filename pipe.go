@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"os"
 	"regexp"
@@ -1347,12 +1348,13 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 
 	resp := p.DoMulti(
 		ctx,
-		//cmds.OptInCmd,
-		//cmds.MultiCmd,
-		//cmds.NewCompleted([]string{"PTTL", ck}),
+		cmds.OptInCmd,
+		cmds.MultiCmd,
+		cmds.NewCompleted([]string{"PTTL", ck}),
 		Completed(cmd),
 		cmds.ExecCmd,
 	)
+	log.Printf("[SHR-570] -- DoCache -- resp: %v", resp)
 	defer resultsp.Put(resp)
 	exec, err := resp.s[4].ToArray()
 	if err != nil {
