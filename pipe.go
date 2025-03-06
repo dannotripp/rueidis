@@ -1362,7 +1362,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	exec, err := resp.s[4].ToArray()
 	log.Printf("[SHR-570] DOCACHE() LEN(EXEC): %d", len(exec))
 	for i, e := range exec {
-		log.Printf("[SHR-570] DOCACHE() EXEC[%d]: %v", i, e)
+		log.Printf("[SHR-570] DOCACHE() EXEC[%d]: %v", i, e.String())
 	}
 	if err != nil {
 		if _, ok := err.(*RedisError); ok {
