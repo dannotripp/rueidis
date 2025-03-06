@@ -1345,13 +1345,11 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		return newResult(entry.Wait(ctx))
 	}
 
-	
-
 	resp := p.DoMulti(
 		ctx,
-		cmds.OptInCmd,
-		cmds.MultiCmd,
-		cmds.NewCompleted([]string{"PTTL", ck}),
+		//cmds.OptInCmd,
+		//cmds.MultiCmd,
+		//cmds.NewCompleted([]string{"PTTL", ck}),
 		Completed(cmd),
 		cmds.ExecCmd,
 	)
