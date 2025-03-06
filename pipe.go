@@ -1377,6 +1377,9 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		return newErrResult(err)
 	}
 	log.Printf("[SHR-570] DOCACHE() EXEC[1]: %v", exec[1])
+	// TODO: Print out the response (exec[1]) with labeled fields
+	log.Printf("[SHR-570] DOCACHE() EXEC[1] TO STRING: %s", exec[1].String())
+
 	return newResult(exec[1], nil)
 }
 
