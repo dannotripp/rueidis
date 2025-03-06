@@ -1354,7 +1354,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		Completed(cmd),
 		cmds.ExecCmd,
 	)
-	log.Printf("[SHR-570] -- DoCache -- resp: %v", resp)
+	log.Printf("[SHR-570] -- DoCache -- len(resp)", len(resp.s))
 	defer resultsp.Put(resp)
 	exec, err := resp.s[4].ToArray()
 	if err != nil {
