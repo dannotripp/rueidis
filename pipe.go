@@ -1354,7 +1354,10 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		Completed(cmd),
 		cmds.ExecCmd,
 	)
-	log.Printf("[SHR-570] DOCACHE() LEN(RESP): %d RESP: %v", len(resp.s), resp.s)
+	log.Printf("[SHR-570] DOCACHE() LEN(RESP): %d", len(resp.s))
+	for i, r := range resp.s {
+		log.Printf("[SHR-570] DOCACHE() RESP[%d]: %v", i, r)
+	}
 	defer resultsp.Put(resp)
 	exec, err := resp.s[4].ToArray()
 	if err != nil {
