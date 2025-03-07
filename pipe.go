@@ -1466,8 +1466,9 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	
 		resp = p.DoMulti(
 			ctx,
-			cmds.OptInCmd,
+			//cmds.OptInCmd,
 			cmds.MultiCmd,
+			cmds.NewCompleted([]string{"PTTL", ck}),
 			cmds.NewCompleted([]string{"PTTL", ck}),
 			Completed(cmd),
 			cmds.ExecCmd,
