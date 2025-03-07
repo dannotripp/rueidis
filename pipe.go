@@ -1356,6 +1356,9 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		return p.Do(ctx, Completed(cmd))
 	}
 
+	// log the cmd
+	log.Printf("[SHR-570] DOCACHE() CMD: %v", cmd.Commands())
+
 	cmds.CacheableCS(cmd).Verify()
 
 	if cmd.IsMGet() {
