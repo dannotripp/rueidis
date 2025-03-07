@@ -1375,6 +1375,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() RESULT: %v", v.FormatMessage())
 	// log the cache flight entry
 	log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() ENTRY: %v", entry.ToString())
+
 	if v.typ != 0 {
 		return newResult(v, nil)
 	} else if entry != nil {
