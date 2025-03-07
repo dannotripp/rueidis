@@ -1424,7 +1424,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	// log the command
 	log.Printf("[SHR-570] DOCACHE() COMMANDS[0]: %v", cmd.Commands()[0])
 	log.Printf("[SHR-570] DOCACHE() COMMANDS: %v", cmd.Commands())
-	if cmd.Commands()[0] == "GET"{
+	if cmd.Commands()[0] == "GET" && false{
 		log.Println("[SHR-570] DO() GET")
 		resp2 = p.Do(
 			ctx,
