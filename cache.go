@@ -181,8 +181,5 @@ func (a *adapterEntry) Wait(ctx context.Context) (RedisMessage, error) {
 }
 
 func(a *adapterEntry) ToString() string {
-	if a.err != nil {
-		return a.err.Error()
-	}
-	return a.val.String()
+	return "METHOD NOT IMPLEMENTED"
 }
