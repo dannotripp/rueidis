@@ -1498,7 +1498,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		// 	p.cache.Cancel(ck, cc, err)
 		// 	return newErrResult(err)
 		// }
-		return newResult(exec[2], nil)
+		return newResult(exec[len(exec)-1], nil)
 	}
 }
 
