@@ -3,7 +3,7 @@ package rueidis
 import (
 	"container/list"
 	"context"
-	// "fmt"
+	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -34,9 +34,9 @@ type cacheEntry struct {
 }
 
 func (e *cacheEntry) ToString() string {
-	// if e != nil {
-	// 	return fmt.Sprintf("cacheEntry{err: %v, ch: %v, kc: %v, cmd: %v, val: %v, size: %v}", e.err, e.ch, e.kc, e.cmd, e.val, e.size)
-	// }
+	if e != nil {
+		return fmt.Sprintf("cacheEntry{err: %v, ch: %v, kc: %v, cmd: %v, val: %v, size: %v}", e.err, e.ch, e.kc, e.cmd, e.val, e.size)
+	}
 	return "nil"
 }
 
