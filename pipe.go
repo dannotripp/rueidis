@@ -1385,6 +1385,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		log.Printf("[SHR-570] DOCACHE() RESP[%d]: val: attrs: %v, string: %v, values: %v, integer: %v, type: %v, ttl: %v", i, r.val.attrs, r.val.string, r.val.values, r.val.integer, r.val.typ, r.val.ttl)
 		msg, _ := r.ToMessage()
 		log.Printf("[SHR-570] DOCACHE() RESP[%d]: MESSAGE: %v", i, msg)
+		
 	}
 	defer resultsp.Put(resp)
 	exec, err := resp.s[4].ToArray()
