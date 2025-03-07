@@ -1396,6 +1396,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	log.Printf("[SHR-570] DOCACHE() CMD: %v", cmd.Commands())
 
 	if p.cache == nil {
+		log.Printf("[SHR-570] DOCACHE() CACHE IS NIL ====================================")
 		return p.Do(ctx, Completed(cmd))
 	}
 
