@@ -1444,7 +1444,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	log.Printf("[SHR-570] DOCACHE() COMMANDS: %v", cmd.Commands())
 
 	if cmd.Commands()[0] == "GET" { // TODO: Change this condition to check if BCAST is enabled
-		log.Printf("[SHR-570] DOCACHE() DO-MULTI() CMD.GET====================================")
+		log.Printf("[SHR-570] DOCACHE() DO-MULTI() CMD.GET START ====================================")
 		resp := p.DoMulti(
 			ctx,
 			cmds.OptInCmd,
@@ -1478,7 +1478,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 			p.cache.Cancel(ck, cc, err)
 			return newErrResult(err)
 		}
-		log.Printf("[SHR-570] DOCACHE() DO-MULTI() CMD.GET====================================")
+		log.Printf("[SHR-570] DOCACHE() DO-MULTI() CMD.GET END ====================================")
 		return newResult(exec[len(exec)-1], nil)
 
 	} else {
