@@ -15,23 +15,23 @@ var errChunked = errors.New("unbounded redis message")
 var errOldNull = errors.New("RESP2 null")
 
 const (
-	typeBlobString     = byte('$')
-	typeSimpleString   = byte('+')
-	typeSimpleErr      = byte('-')
-	typeInteger        = byte(':')
-	typeNull           = byte('_')
-	typeEnd            = byte('.')
-	typeFloat          = byte(',')
-	typeBool           = byte('#')
-	typeBlobErr        = byte('!')
-	typeVerbatimString = byte('=')
-	typeBigNumber      = byte('(')
-	typeArray          = byte('*')
-	typeMap            = byte('%')
-	typeSet            = byte('~')
-	typeAttribute      = byte('|')
-	typePush           = byte('>')
-	typeChunk          = byte(';')
+	typeBlobString     = byte('$') // 36
+	typeSimpleString   = byte('+') // 43
+	typeSimpleErr      = byte('-') // 45
+	typeInteger        = byte(':') // 58
+	typeNull           = byte('_') // 95
+	typeEnd            = byte('.') // 46
+	typeFloat          = byte(',') // 44
+	typeBool           = byte('#') // 35
+	typeBlobErr        = byte('!') // 33
+	typeVerbatimString = byte('=') // 61
+	typeBigNumber      = byte('(') // 40
+	typeArray          = byte('*') // 42
+	typeMap            = byte('%') // 37
+	typeSet            = byte('~') // 126
+	typeAttribute      = byte('|') // 124
+	typePush           = byte('>') // 62
+	typeChunk          = byte(';') // 59
 )
 
 var typeNames = make(map[byte]string, 16)

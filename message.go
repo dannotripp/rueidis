@@ -542,7 +542,70 @@ func (m *RedisMessage) FormatMessage() string {
 	for _, v := range m.values {
 		formattedMessages = append(formattedMessages, v.FormatMessage())
 	}
-	return fmt.Sprintf("\n\t\tATTRS: %v\n\t\tSTRING: %v\n\t\tVALUES: %v\n\t\tINTEGER: %v\n\t\tTYP: %v\n\t\tTTL: %v", m.attrs, m.string, formattedMessages, m.integer, m.typ, m.ttl)
+	return fmt.Sprintf("\n\t\tATTRS: %v\n\t\tSTRING: %v\n\t\tVALUES: %v\n\t\tINTEGER: %v\n\t\tTYP: %v\n\t\tTYP: %v\n\t\tTTL: %v", m.attrs, m.string, formattedMessages, m.integer, m.typ, PrintType(m.typ), m.ttl)
+}
+
+/*
+const (
+	typeBlobString     = byte('$') // 36
+	typeSimpleString   = byte('+') // 43
+	typeSimpleErr      = byte('-') // 45
+	typeInteger        = byte(':') // 58
+	typeNull           = byte('_') // 95
+	typeEnd            = byte('.') // 46
+	typeFloat          = byte(',') // 44
+	typeBool           = byte('#') // 35
+	typeBlobErr        = byte('!') // 33
+	typeVerbatimString = byte('=') // 61
+	typeBigNumber      = byte('(') // 40
+	typeArray          = byte('*') // 42
+	typeMap            = byte('%') // 37
+	typeSet            = byte('~') // 126
+	typeAttribute      = byte('|') // 124
+	typePush           = byte('>') // 62
+	typeChunk          = byte(';') // 59
+)
+*/
+
+func PrintType(t byte) string {
+	switch t {
+	case typeBlobString:
+		return "typeBlobString"
+	case typeSimpleString:
+		return "typeSimpleString"
+	case typeSimpleErr:
+		return "typeSimpleErr"
+	case typeInteger:
+		return "typeInteger"
+	case typeNull:
+		return "typeNull"
+	case typeEnd:
+		return "typeEnd"
+	case typeFloat:
+		return "typeFloat"
+	case typeBool:
+		return "typeBool"
+	case typeBlobErr:
+		return "typeBlobErr"
+	case typeVerbatimString:
+		return "typeVerbatimString"
+	case typeBigNumber:
+		return "typeBigNumber"
+	case typeArray:
+		return "typeArray"
+	case typeMap:
+		return "typeMap"
+	case typeSet:
+		return "typeSet"
+	case typeAttribute:
+		return "typeAttribute"
+	case typePush:
+		return "typePush"
+	case typeChunk:
+		return "typeChunk"
+	default:
+		return "unknown"
+	}
 }
 
 func (m *RedisMessage) cachesize() int {

@@ -1328,6 +1328,29 @@ next:
 	return m, nil
 }
 
+	/*
+	// RedisMessage is a redis response message, it may be a nil response
+	type RedisMessage struct {
+		attrs   *RedisMessage
+		string  string
+		values  []RedisMessage
+		integer int64
+		typ     byte
+		ttl     [7]byte
+	}
+
+	// RedisResult is the return struct from Client.Do or Client.DoCache
+	// it contains either a redis response or an underlying error (ex. network timeout).
+	type RedisResult struct {
+		err error
+		val RedisMessage
+	}
+
+	type redisresults struct {
+		s []RedisResult
+	}
+	*/
+
 func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) RedisResult {
 	if p.cache == nil {
 		return p.Do(ctx, Completed(cmd))
@@ -1355,28 +1378,6 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		cmds.ExecCmd,
 	)
 	log.Printf("[SHR-570] DOCACHE() LEN(RESP): %d", len(resp.s))
-	/*
-	// RedisMessage is a redis response message, it may be a nil response
-	type RedisMessage struct {
-		attrs   *RedisMessage
-		string  string
-		values  []RedisMessage
-		integer int64
-		typ     byte
-		ttl     [7]byte
-	}
-
-	// RedisResult is the return struct from Client.Do or Client.DoCache
-	// it contains either a redis response or an underlying error (ex. network timeout).
-	type RedisResult struct {
-		err error
-		val RedisMessage
-	}
-
-	type redisresults struct {
-		s []RedisResult
-	}
-	*/
 
 	// log the err and val of each response
 	for i, r := range resp.s {
