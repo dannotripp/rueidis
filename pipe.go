@@ -1053,7 +1053,7 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 queue:
 	log.Println("DOMULTI() QUEUE")
 	log.Printf("DOMULTI() PUT MULTI: %v\n", multi)
-	ch := p.queue.PutMulti(multi[1:], resp.s)
+	ch := p.queue.PutMulti(multi, resp.s)
 	if ctxCh := ctx.Done(); ctxCh == nil {
 		<-ch
 	} else {
@@ -1419,14 +1419,27 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 
 	// log the inputs to p.DoMulti()
 	log.Printf("[SHR-570] DOCACHE() DO-MULTI() INPUTS CTX: %v, CMD.OPTIN: %v, CMD.MULTI: %v, CMD.PTTL: %v, CMD.COMPLETED: %v, CMD.EXEC: %v", ctx, cmds.OptInCmd, cmds.MultiCmd, cmds.NewCompleted([]string{"PTTL", ck}), Completed(cmd), cmds.ExecCmd)
-	resp := p.DoMulti(
-		ctx,
-		cmds.OptInCmd,
-		cmds.MultiCmd,
-		cmds.NewCompleted([]string{"PTTL", ck}),
-		Completed(cmd),
-		cmds.ExecCmd,
-	)
+	
+	var resp *redisresults
+	if cmd.Commands()[0] != "CLIENT CACHING YES" {
+		resp = p.DoMulti(
+			ctx,
+			cmds.OptInCmd,
+			cmds.MultiCmd,
+			cmds.NewCompleted([]string{"PTTL", ck}),
+			Completed(cmd),
+			cmds.ExecCmd,
+		)
+	} else {
+		resp = p.DoMulti(
+			ctx,
+			cmds.OptInCmd,
+			cmds.MultiCmd,
+			cmds.NewCompleted([]string{"PTTL", ck}),
+			Completed(cmd),
+			cmds.ExecCmd,
+		)
+	}
 
 	// log.Printf("[SHR-570] DOCACHE() LEN(RESP): %d", len(resp.s))
 
