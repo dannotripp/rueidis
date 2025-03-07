@@ -1403,6 +1403,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	cmds.CacheableCS(cmd).Verify()
 
 	if cmd.IsMGet() {
+		log.Printf("[SHR-570] DOCACHE() CMD IS MGET ====================================")
 		return p.doCacheMGet(ctx, cmd, ttl)
 	}
 	ck, cc := cmds.CacheKey(cmd)
