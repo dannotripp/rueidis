@@ -1482,6 +1482,17 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		}
 		log.Printf("[SHR-570] DOCACHE() DO-MULTI() CMD.GET END ====================================")
 		log.Printf("[SHR-570] DOCACHE() EXEC: %v", exec[len(exec)-1])
+
+		// check if data has been added to clent side cache
+		log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() CHECK CACHE ====================================")
+		val, ent := p.cache.Flight(ck, cc, ttl, now);
+		log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() RESULT: %v", val.FormatMessage())
+		if ent != nil {
+			log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() ENTRY: %v", ent.ToString())
+		} else {
+			log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() ENTRY: nil")
+		}
+
 		return newResult(exec[len(exec)-1], nil)
 
 	} else {
