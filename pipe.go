@@ -1433,6 +1433,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		log.Printf("[SHR-570] DO() DONE")
 		log.Printf("[SHR-570] DO() RESP2: %v", resp2.val.FormatMessage())
 		resp.s = []RedisResult{resp2}
+		log.Printf("[SHR-570] DOCACHE() RESP: %v", resp.s[0].val.FormatMessage())
 		defer resultsp.Put(resp)
 		exec, _ := resp.s[0].ToArray()
 		return newResult(exec[0], nil)
