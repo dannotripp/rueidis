@@ -947,7 +947,6 @@ abort:
 }
 
 func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
-	multi = multi[1:]
 	resp := resultsp.Get(len(multi), len(multi))
 	if err := ctx.Err(); err != nil {
 		for i := 0; i < len(resp.s); i++ {
