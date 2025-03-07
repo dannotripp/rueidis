@@ -947,6 +947,7 @@ abort:
 }
 
 func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
+	log.Println("[DOMULTI()] 1")
 	resp := resultsp.Get(len(multi), len(multi))
 	if err := ctx.Err(); err != nil {
 		for i := 0; i < len(resp.s); i++ {
@@ -954,13 +955,13 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 		}
 		return resp
 	}
-
+	log.Println("[DOMULTI()] 2")
 	cmds.CompletedCS(multi[0]).Verify()
 
 	isOptIn := multi[0].IsOptIn() // len(multi) > 0 should have already been checked by upper layer
 	// isOptIn := false // disable opt-in for now
 	noReply := 0
-
+	log.Println("[DOMULTI()] 3")
 	for _, cmd := range multi {
 
 		// log the cmd name for debugging
@@ -970,7 +971,7 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 			noReply++
 		}
 	}
-
+	log.Println("[DOMULTI()] 4")
 	if p.version < 6 && noReply != 0 {
 		if noReply != len(multi) {
 			for i := 0; i < len(resp.s); i++ {
@@ -982,7 +983,7 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 			return p._r2pipe().DoMulti(ctx, multi...)
 		}
 	}
-
+	log.Println("[DOMULTI()] 5")
 	log.Println("DOMULTI() SKIP R2PS")
 
 	for _, cmd := range multi {
@@ -1005,55 +1006,67 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 			break
 		}
 	}
-
+	log.Println("[DOMULTI()] 6")
 	log.Println("DOMULTI() SKIP BLOCK")
 
 	waits := atomic.AddInt32(&p.waits, 1) // if this is 1, and background worker is not started, no need to queue
 	state := atomic.LoadInt32(&p.state)
-
+	log.Println("[DOMULTI()] 7")
 	if state == 1 {
+		log.Println("[DOMULTI()] 8")
 		log.Println("DOMULTI() STATE 1 - GOTO QUEUE")
 		goto queue
 	}
-
+	log.Println("[DOMULTI()] 9")
 	if state == 0 {
+		log.Println("[DOMULTI()] 10")
 		log.Println("DOMULTI() STATE 0")
 		if waits != 1 {
+			log.Println("[DOMULTI()] 11")
 			log.Println("DOMULTI() WAITS != 1 - GOTO QUEUE")
 			goto queue
 		}
 		if isOptIn || noReply != 0 {
+			log.Println("[DOMULTI()] 12")
 			log.Println("DOMULTI() IS OPTIN OR NO REPLY - BACKGROUND - GOTO QUEUE")
 			p.background()
 			goto queue
 		}
 		dl, ok := ctx.Deadline()
 		if p.queue != nil && !ok && ctx.Done() != nil {
+			log.Println("[DOMULTI()] 13")
 			log.Println("DOMULTI() DEADLINE - BACKGROUND - GOTO QUEUE")
 			p.background()
 			goto queue
 		}
 		log.Println("DOMULTI() SYNC DO")
+		log.Println("[DOMULTI()] 14")
 		p.syncDoMulti(dl, ok, resp.s, multi)
+		log.Println("[DOMULTI()] 15")
 	} else {
+		log.Println("[DOMULTI()] 16")
 		log.Println("DOMULTI() STATE != 0")
 		err := newErrResult(p.Error())
 		for i := 0; i < len(resp.s); i++ {
 			resp.s[i] = err
 		}
 	}
-
+	log.Println("[DOMULTI()] 17")
 	if left := atomic.AddInt32(&p.waits, -1); state == 0 && left != 0 {
+		log.Println("[DOMULTI()] 18")
 		log.Println("DOMULTI() BACKGROUND")
 		p.background()
 	}
 	atomic.AddInt32(&p.recvs, 1)
+	log.Println("[DOMULTI()] 19")
 	return resp
 
 queue:
+	log.Println("[DOMULTI()] 20")
 	log.Println("DOMULTI() QUEUE")
 	log.Printf("DOMULTI() PUT MULTI: %v\n", multi)
 	ch := p.queue.PutMulti(multi, resp.s)
+	log.Println("[DOMULTI()] 21")
 	if ctxCh := ctx.Done(); ctxCh == nil {
 		<-ch
 	} else {
@@ -1063,10 +1076,13 @@ queue:
 			goto abort
 		}
 	}
+	log.Println("[DOMULTI()] 22")
 	atomic.AddInt32(&p.waits, -1)
 	atomic.AddInt32(&p.recvs, 1)
+	log.Println("[DOMULTI()] 23")
 	return resp
 abort:
+	log.Println("[DOMULTI()] 24")
 	log.Println("DOMULTI() ABORT")
 	go func(resp *redisresults, ch chan RedisResult) {
 		<-ch
@@ -1074,11 +1090,14 @@ abort:
 		atomic.AddInt32(&p.waits, -1)
 		atomic.AddInt32(&p.recvs, 1)
 	}(resp, ch)
+	log.Println("[DOMULTI()] 25")
 	resp = resultsp.Get(len(multi), len(multi))
 	err := newErrResult(ctx.Err())
+	log.Println("[DOMULTI()] 26")
 	for i := 0; i < len(resp.s); i++ {
 		resp.s[i] = err
 	}
+	log.Println("[DOMULTI()] 27")
 	return resp
 }
 
