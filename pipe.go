@@ -1428,7 +1428,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 			//cmds.MultiCmd,
 			cmds.NewCompleted([]string{"PTTL", ck}),
 			Completed(cmd),
-			cmds.ExecCmd,
+			//cmds.ExecCmd,
 		)
 
 		// log.Printf("[SHR-570] DOCACHE() LEN(RESP): %d", len(resp.s))
