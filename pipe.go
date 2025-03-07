@@ -947,6 +947,7 @@ abort:
 }
 
 func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
+	multi = multi[1:]
 	resp := resultsp.Get(len(multi), len(multi))
 	if err := ctx.Err(); err != nil {
 		for i := 0; i < len(resp.s); i++ {
@@ -1042,7 +1043,7 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 	return resp
 
 queue:
-	ch := p.queue.PutMulti(multi[1:], resp.s)
+	ch := p.queue.PutMulti(multi, resp.s)
 	if ctxCh := ctx.Done(); ctxCh == nil {
 		<-ch
 	} else {
