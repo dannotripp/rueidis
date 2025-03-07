@@ -179,3 +179,7 @@ func (a *adapterEntry) Wait(ctx context.Context) (RedisMessage, error) {
 		return a.val, a.err
 	}
 }
+
+func(a *adapterEntry) ToString() string {
+	return a.val.String()
+}
