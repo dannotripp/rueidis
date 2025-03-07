@@ -1430,6 +1430,9 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 			Completed(cmd),
 			//cmds.ExecCmd,
 		)
+		defer resultsp.Put(resp)
+		exec, _ := resp.s[0].ToArray()
+		return newResult(exec[0], nil)
 
 	} else {
 		resp = p.DoMulti(
