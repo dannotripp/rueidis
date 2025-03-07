@@ -1053,7 +1053,7 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 queue:
 	log.Println("DOMULTI() QUEUE")
 	log.Printf("DOMULTI() PUT MULTI: %v\n", multi)
-	ch := p.queue.PutMulti(multi, resp.s)
+	ch := p.queue.PutMulti(multi[1:], resp.s)
 	if ctxCh := ctx.Done(); ctxCh == nil {
 		<-ch
 	} else {
