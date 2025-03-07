@@ -1425,7 +1425,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		resp = p.DoMulti(
 			ctx,
 			//cmds.OptInCmd,
-			cmds.MultiCmd,
+			//cmds.MultiCmd,
 			cmds.NewCompleted([]string{"PTTL", ck}),
 			Completed(cmd),
 			cmds.ExecCmd,
@@ -1438,7 +1438,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		// 	log.Printf("[SHR-570] DOCACHE() RESP[%d]: MESSAGE: %v", i, r.FormatMessage())
 		// }
 		defer resultsp.Put(resp)
-		exec, err := resp.s[3].ToArray()
+		exec, err := resp.s[2].ToArray()
 		// log.Printf("[SHR-570] DOCACHE() LEN(EXEC): %d", len(exec))
 		// for i, e := range exec {
 		// 	log.Printf("[SHR-570] DOCACHE() EXEC[%d]: %v", i, e.FormatMessage())
