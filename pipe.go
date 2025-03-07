@@ -1421,7 +1421,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	log.Printf("[SHR-570] DOCACHE() DO-MULTI() INPUTS CTX: %v, CMD.OPTIN: %v, CMD.MULTI: %v, CMD.PTTL: %v, CMD.COMPLETED: %v, CMD.EXEC: %v", ctx, cmds.OptInCmd, cmds.MultiCmd, cmds.NewCompleted([]string{"PTTL", ck}), Completed(cmd), cmds.ExecCmd)
 	
 	var resp *redisresults
-	if cmd.Commands()[0] != "CLIENT CACHING YES" {
+	if cmd.Commands()[0] != "CLIENT CACHING YES" && false {
 		resp = p.DoMulti(
 			ctx,
 			//cmds.OptInCmd,
@@ -1431,31 +1431,6 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 			//cmds.ExecCmd,
 		)
 
-		log.Printf("[SHR-570] DOCACHE() LEN(RESP): %d", len(resp.s))
-
-		// log the err and val of each response
-		for i, r := range resp.s {
-			log.Printf("[SHR-570] DOCACHE() RESP[%d]: MESSAGE: %v", i, r.FormatMessage())
-		}
-		defer resultsp.Put(resp)
-		exec, err := resp.s[0].ToArray()
-		log.Printf("[SHR-570] DOCACHE() LEN(EXEC): %d", len(exec))
-		for i, e := range exec {
-			log.Printf("[SHR-570] DOCACHE() EXEC[%d]: %v", i, e.FormatMessage())
-		}
-		if err != nil {
-			if _, ok := err.(*RedisError); ok {
-				err = ErrDoCacheAborted
-				// if preErr := resp.s[0].Error(); preErr != nil { // if {cmd} get a RedisError
-				// 	if _, ok := preErr.(*RedisError); ok {
-				// 		err = preErr
-				// 	}
-				// }
-			}
-			p.cache.Cancel(ck, cc, err)
-			return newErrResult(err)
-		}
-		return newResult(exec[1], nil)
 	} else {
 		resp = p.DoMulti(
 			ctx,
