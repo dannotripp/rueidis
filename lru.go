@@ -35,7 +35,7 @@ type cacheEntry struct {
 
 func (e *cacheEntry) ToString() string {
 	if e != nil {
-		return fmt.Sprintf("cacheEntry{ERR: %v\nCH: %v\nKC: %v\nCMD: %v\nVAL: %v\nSIZE: %v}", e.err, e.ch, e.kc, e.cmd, e.val, e.size)
+		return fmt.Sprintf("\n\tERR: %v\n\tCH: %v\n\tKC: %v\n\tCMD: %v\n\tVAL: %v\n\tSIZE: %v", e.err, e.ch, e.kc, e.cmd, e.val, e.size)
 	}
 	return "nil"
 }
