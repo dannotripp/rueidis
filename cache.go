@@ -44,6 +44,7 @@ type CacheStore interface {
 // CacheEntry should be used to wait for single-flight response when cache missed.
 type CacheEntry interface {
 	Wait(ctx context.Context) (RedisMessage, error)
+	ToString() string
 }
 
 // SimpleCache is an alternative interface should be paired with NewSimpleCacheAdapter to construct a CacheStore
