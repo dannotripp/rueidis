@@ -1379,13 +1379,23 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	} else {
 		log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() ENTRY: nil")
 	}
-	
-	if v.typ != 0 {
+
+	/*
+	// Case 1: (empty RedisMessage, nil CacheEntry)     <- when cache missed, and rueidis will send the request to redis.
+	// Case 2: (empty RedisMessage, non-nil CacheEntry) <- when cache missed, and rueidis will use CacheEntry.Wait to wait for response.
+	// Case 3: (non-empty RedisMessage, nil CacheEntry) <- when cache hit
+	*/
+
+	if v.typ != 0 { // Case 3
+		log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() CASE 3 CACHE HIT")
 		return newResult(v, nil)
-	} else if entry != nil {
+	} else if entry != nil { // Case 2
+		log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() CASE 2 CACHE MISS")
 		return newResult(entry.Wait(ctx))
 	}
-
+	// Case 1
+	log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() CASE 1 CACHE MISS")
+	
 	resp := p.DoMulti(
 		ctx,
 		cmds.OptInCmd,
