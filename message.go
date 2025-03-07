@@ -156,7 +156,7 @@ func (r RedisResult) ToMessage() (v RedisMessage, err error) {
 
 // FormatMessage returns RedisMessage with formatting
 func (r RedisResult) FormatMessage() string{
-	return fmt.Sprintf("\n\tATTRS: %v\n\tSTRING: %v\n\tVALUES: %v\n\tINTEGER: %v\n\tTYP: %v\n\tTTL: %v\n", r.val.attrs, r.val.string, r.val.values, r.val.integer, r.val.typ, r.val.ttl)
+	return fmt.Sprintf("\n\tATTRS: %v\n\tSTRING: %v\n\tVALUES: %v\n\tINTEGER: %v\n\tTYP: %v\n\tTTL: %v\n", r.val.attrs, r.val.string, r.val.FormatMessage(), r.val.integer, r.val.typ, r.val.ttl)
 }
 
 // ToInt64 delegates to RedisMessage.ToInt64
@@ -534,6 +534,15 @@ type RedisMessage struct {
 	integer int64
 	typ     byte
 	ttl     [7]byte
+}
+
+func (m *RedisMessage) FormatMessage() string {
+	// iterate through the values and format them
+	var formattedMessages []string
+	for _, v := range m.values {
+		formattedMessages = append(formattedMessages, v.FormatMessage())
+	}
+	return fmt.Sprintf("\n\tATTRS: %v\n\tSTRING: %v\n\tVALUES: %v\n\tINTEGER: %v\n\tTYP: %v\n\tTTL: %v\n", m.attrs, m.string, formattedMessages, m.integer, m.typ, m.ttl)
 }
 
 func (m *RedisMessage) cachesize() int {
