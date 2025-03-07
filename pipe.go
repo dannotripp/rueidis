@@ -1421,7 +1421,8 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	var resp *redisresults
 	var resp2 RedisResult
 	// log the command
-	log.Printf("[SHR-570] DOCACHE() COMMANDs[0]: %v", cmd.Commands()[0])
+	log.Printf("[SHR-570] DOCACHE() COMMANDS[0]: %v", cmd.Commands()[0])
+	log.Printf("[SHR-570] DOCACHE() COMMANDS: %v", cmd.Commands())
 	if cmd.Commands()[0] == "CLIENT CACHING YES"{
 		log.Println("[SHR-570] DOCACHE() CLIENT CACHING YES")
 		resp2 = p.Do(
