@@ -1367,10 +1367,13 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	ck, cc := cmds.CacheKey(cmd)
 
 	// log cache key and command
-	log.Printf("[SHR-570] DOCACHE() CK: %v, CC: %v", ck, cc)
+	log.Printf("[SHR-570] DOCACHE() Cache Key: %v, COMMAND: %v", ck, cc)
 
 	now := time.Now()
-	if v, entry := p.cache.Flight(ck, cc, ttl, now); v.typ != 0 {
+	v, entry := p.cache.Flight(ck, cc, ttl, now);
+	// log the cache flight result
+	log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() RESULT: %v", v.FormatMessage())
+	if v.typ != 0 {
 		return newResult(v, nil)
 	} else if entry != nil {
 		return newResult(entry.Wait(ctx))
