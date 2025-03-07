@@ -1352,12 +1352,12 @@ next:
 	*/
 
 func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) RedisResult {
+	// log the cmd
+	log.Printf("[SHR-570] DOCACHE() CMD: %v", cmd.Commands())
+
 	if p.cache == nil {
 		return p.Do(ctx, Completed(cmd))
 	}
-
-	// log the cmd
-	log.Printf("[SHR-570] DOCACHE() CMD: %v", cmd.Commands())
 
 	cmds.CacheableCS(cmd).Verify()
 
@@ -1365,6 +1365,10 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		return p.doCacheMGet(ctx, cmd, ttl)
 	}
 	ck, cc := cmds.CacheKey(cmd)
+
+	// log cache key and command
+	log.Printf("[SHR-570] DOCACHE() CK: %v, CC: %v", ck, cc)
+
 	now := time.Now()
 	if v, entry := p.cache.Flight(ck, cc, ttl, now); v.typ != 0 {
 		return newResult(v, nil)
