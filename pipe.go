@@ -1013,36 +1013,47 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 	state := atomic.LoadInt32(&p.state)
 
 	if state == 1 {
+		log.Println("DOMULTI() STATE 1 - GOTO QUEUE")
 		goto queue
 	}
 
 	if state == 0 {
+		log.Println("DOMULTI() STATE 0")
 		if waits != 1 {
+			log.Println("DOMULTI() WAITS != 1 - GOTO QUEUE")
 			goto queue
 		}
 		if isOptIn || noReply != 0 {
+			log.Println("DOMULTI() IS OPTIN OR NO REPLY - BACKGROUND - GOTO QUEUE")
 			p.background()
 			goto queue
 		}
 		dl, ok := ctx.Deadline()
 		if p.queue != nil && !ok && ctx.Done() != nil {
+			log.Println("DOMULTI() DEADLINE - BACKGROUND - GOTO QUEUE")
 			p.background()
 			goto queue
 		}
+		log.Println("DOMULTI() SYNC DO")
 		p.syncDoMulti(dl, ok, resp.s, multi)
 	} else {
+		log.Println("DOMULTI() STATE != 0")
 		err := newErrResult(p.Error())
 		for i := 0; i < len(resp.s); i++ {
 			resp.s[i] = err
 		}
 	}
+
 	if left := atomic.AddInt32(&p.waits, -1); state == 0 && left != 0 {
+		log.Println("DOMULTI() BACKGROUND")
 		p.background()
 	}
 	atomic.AddInt32(&p.recvs, 1)
 	return resp
 
 queue:
+	log.Println("DOMULTI() QUEUE")
+	log.Printf("DOMULTI() PUT MULTI: %v\n", multi)
 	ch := p.queue.PutMulti(multi, resp.s)
 	if ctxCh := ctx.Done(); ctxCh == nil {
 		<-ch
@@ -1057,6 +1068,7 @@ queue:
 	atomic.AddInt32(&p.recvs, 1)
 	return resp
 abort:
+	log.Println("DOMULTI() ABORT")
 	go func(resp *redisresults, ch chan RedisResult) {
 		<-ch
 		resultsp.Put(resp)
