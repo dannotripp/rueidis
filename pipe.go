@@ -1381,7 +1381,6 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	// log the err and val of each response
 	for i, r := range resp.s {
 		log.Printf("[SHR-570] DOCACHE() RESP[%d]: err: %v, val: %v", i, r.err, r.val)
-		// log the val of each redismessage including its attributes, string, values, integer, type, and ttl
 		log.Printf("[SHR-570] DOCACHE() RESP[%d]: val: attrs: %v, string: %v, values: %v, integer: %v, type: %v, ttl: %v", i, r.val.attrs, r.val.string, r.val.values, r.val.integer, r.val.typ, r.val.ttl)
 	}
 	defer resultsp.Put(resp)
