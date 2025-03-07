@@ -1395,7 +1395,9 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	}
 	// Case 1
 	log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() CASE 1 CACHE MISS")
-	
+
+	// log the inputs to p.DoMulti()
+	log.Printf("[SHR-570] DOCACHE() DO-MULTI() INPUTS CTX: %v, CMD.OPTIN: %v, CMD.MULTI: %v, CMD.PTTL: %v, CMD.COMPLETED: %v, CMD.EXEC: %v", ctx, cmds.OptInCmd, cmds.MultiCmd, cmds.NewCompleted([]string{"PTTL", ck}), Completed(cmd), cmds.ExecCmd)
 	resp := p.DoMulti(
 		ctx,
 		cmds.OptInCmd,
@@ -1404,6 +1406,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		Completed(cmd),
 		cmds.ExecCmd,
 	)
+
 	log.Printf("[SHR-570] DOCACHE() LEN(RESP): %d", len(resp.s))
 
 	// log the err and val of each response
