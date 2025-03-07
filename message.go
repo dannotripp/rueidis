@@ -542,7 +542,7 @@ func (m *RedisMessage) FormatMessage() string {
 	for _, v := range m.values {
 		formattedMessages = append(formattedMessages, v.FormatMessage())
 	}
-	return fmt.Sprintf("\n\t\tATTRS: %v\n\t\tSTRING: %v\n\t\tVALUES: %v\n\t\tINTEGER: %v\n\tTYP: %v\n\t\tTTL: %v\n", m.attrs, m.string, formattedMessages, m.integer, m.typ, m.ttl)
+	return fmt.Sprintf("\n\t\tATTRS: %v\n\t\tSTRING: %v\n\t\tVALUES: %v\n\t\tINTEGER: %v\n\t\tTYP: %v\n\t\tTTL: %v", m.attrs, m.string, formattedMessages, m.integer, m.typ, m.ttl)
 }
 
 func (m *RedisMessage) cachesize() int {
