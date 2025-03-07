@@ -962,8 +962,10 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 	noReply := 0
 
 	for _, cmd := range multi {
+
 		// log the cmd name for debugging
 		fmt.Printf("DOMULTI() COMMAND: %v\n", cmd.Commands())
+
 		if cmd.NoReply() {
 			noReply++
 		}
@@ -980,6 +982,8 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 			return p._r2pipe().DoMulti(ctx, multi...)
 		}
 	}
+
+	log.Println("DOMULTI() SKIP R2PS")
 
 	for _, cmd := range multi {
 		if cmd.IsBlock() {
