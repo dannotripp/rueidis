@@ -1481,7 +1481,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		}
 		defer resultsp.Put(resp)
 		// exec, err := resp.s[4].ToArray()
-		exec, _ := resp.s[4].ToArray()
+		exec, _ := resp.s[5].ToArray()
 		log.Printf("[SHR-570] DOCACHE() LEN(EXEC): %d", len(exec))
 		for i, e := range exec {
 			log.Printf("[SHR-570] DOCACHE() EXEC[%d]: %v", i, e.FormatMessage())
