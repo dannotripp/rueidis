@@ -1446,11 +1446,11 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		if err != nil {
 			if _, ok := err.(*RedisError); ok {
 				err = ErrDoCacheAborted
-				if preErr := resp.s[0].Error(); preErr != nil { // if {cmd} get a RedisError
-					if _, ok := preErr.(*RedisError); ok {
-						err = preErr
-					}
-				}
+				// if preErr := resp.s[0].Error(); preErr != nil { // if {cmd} get a RedisError
+				// 	if _, ok := preErr.(*RedisError); ok {
+				// 		err = preErr
+				// 	}
+				// }
 			}
 			p.cache.Cancel(ck, cc, err)
 			return newErrResult(err)
