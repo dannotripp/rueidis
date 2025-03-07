@@ -181,5 +181,5 @@ func (a *adapterEntry) Wait(ctx context.Context) (RedisMessage, error) {
 }
 
 func(a *adapterEntry) ToString() string {
-	return a.val.String()
+	return ""
 }
