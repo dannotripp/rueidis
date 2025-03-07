@@ -154,6 +154,11 @@ func (r RedisResult) ToMessage() (v RedisMessage, err error) {
 	return r.val, err
 }
 
+// FormatMessage returns RedisMessage with formatting
+func (r RedisResult) FormatMessage() string{
+	return fmt.Sprintf("ATTRS: %v\nSTRING: %v\nVALUES: %v\nINTEGER: %v\nTYP: %v\nTTL: %v\n", r.val.attrs, r.val.string, r.val.values, r.val.integer, r.val.typ, r.val.ttl)
+}
+
 // ToInt64 delegates to RedisMessage.ToInt64
 func (r RedisResult) ToInt64() (v int64, err error) {
 	if r.err != nil {
