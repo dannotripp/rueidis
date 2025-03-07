@@ -1430,7 +1430,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() CASE 3 CACHE HIT")
 		return newResult(v, nil)
 	} else if entry != nil { // Case 2
-		log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() CASE 2 CACHE MISS")
+		log.Printf("[SHR-570] DOCACHE() CACHE.FLIGHT() CASE 2 CACHE MISS === ENTRY.WAIT ===")
 		return newResult(entry.Wait(ctx))
 	}
 	// Case 1
