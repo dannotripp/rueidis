@@ -957,7 +957,8 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 
 	cmds.CompletedCS(multi[0]).Verify()
 
-	isOptIn := multi[0].IsOptIn() // len(multi) > 0 should have already been checked by upper layer
+	// isOptIn := multi[0].IsOptIn() // len(multi) > 0 should have already been checked by upper layer
+	isOptIn := false // disable opt-in for now
 	noReply := 0
 
 	for _, cmd := range multi {
