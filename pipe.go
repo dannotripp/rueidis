@@ -1419,6 +1419,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 
 
 	var resp *redisresults
+	resp = &redisresults{s: make([]RedisResult, 5)}
 	var resp2 RedisResult
 	// log the command
 	log.Printf("[SHR-570] DOCACHE() COMMANDS[0]: %v", cmd.Commands()[0])
