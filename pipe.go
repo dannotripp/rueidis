@@ -1424,7 +1424,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	if cmd.Commands()[0] != "CLIENT CACHING YES" {
 		resp = p.DoMulti(
 			ctx,
-			cmds.OptInCmd,
+			//cmds.OptInCmd,
 			cmds.MultiCmd,
 			cmds.NewCompleted([]string{"PTTL", ck}),
 			Completed(cmd),
