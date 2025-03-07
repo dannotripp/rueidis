@@ -1421,15 +1421,13 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 	log.Printf("[SHR-570] DOCACHE() DO-MULTI() INPUTS CTX: %v, CMD.OPTIN: %v, CMD.MULTI: %v, CMD.PTTL: %v, CMD.COMPLETED: %v, CMD.EXEC: %v", ctx, cmds.OptInCmd, cmds.MultiCmd, cmds.NewCompleted([]string{"PTTL", ck}), Completed(cmd), cmds.ExecCmd)
 	
 	var resp *redisresults
-	if cmd.Commands()[0] != "CLIENT CACHING YES" && false {
-		resp = p.DoMulti(
+	var resp2 RedisResult
+	if cmd.Commands()[0] != "CLIENT CACHING YES"{
+		resp2 = p.Do(
 			ctx,
-			//cmds.OptInCmd,
-			//cmds.MultiCmd,
-			cmds.NewCompleted([]string{"PTTL", ck}),
 			Completed(cmd),
-			//cmds.ExecCmd,
 		)
+		resp.s = []RedisResult{resp2}
 		defer resultsp.Put(resp)
 		exec, _ := resp.s[0].ToArray()
 		return newResult(exec[0], nil)
