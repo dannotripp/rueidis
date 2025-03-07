@@ -1437,7 +1437,8 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		defer resultsp.Put(resp)
 		exec, _ := resp.s[0].ToArray()
 		log.Printf("[SHR-570] DOCACHE() LEN(EXEC): %d", len(exec))
-		return newResult(exec[0], nil)
+		// return newResult(exec[0], nil)
+		return newResult(resp2.val, nil)
 
 	} else {
 		// log the inputs to p.DoMulti()
