@@ -1481,6 +1481,7 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 			return newErrResult(err)
 		}
 		log.Printf("[SHR-570] DOCACHE() DO-MULTI() CMD.GET END ====================================")
+		log.Printf("[SHR-570] DOCACHE() EXEC: %v", exec[len(exec)-1])
 		return newResult(exec[len(exec)-1], nil)
 
 	} else {
