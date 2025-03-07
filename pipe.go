@@ -1373,7 +1373,6 @@ func (p *pipe) DoCache(ctx context.Context, cmd Cacheable, ttl time.Duration) Re
 		val RedisMessage
 	}
 
-
 	type redisresults struct {
 		s []RedisResult
 	}
