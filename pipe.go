@@ -1067,6 +1067,7 @@ queue:
 	log.Printf("DOMULTI() PUT MULTI: %v\n", multi)
 	ch := p.queue.PutMulti(multi, resp.s)
 	log.Println("[DOMULTI()] 21")
+	log.Printf("DOMULTI() CHANNEL: %v\n", ch)
 	if ctxCh := ctx.Done(); ctxCh == nil {
 		<-ch
 	} else {
