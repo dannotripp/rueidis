@@ -1080,6 +1080,10 @@ queue:
 	atomic.AddInt32(&p.waits, -1)
 	atomic.AddInt32(&p.recvs, 1)
 	log.Println("[DOMULTI()] 23")
+	log.Printf("DOMULTI() QUEUE RESP: LEN(RESP.S): %v\n", len(resp.s))
+	for i := 0; i < len(resp.s); i++ {
+		log.Printf("DOMULTI() QUEUE RESP[%v]: %v\n", i, resp.s[i].FormatMessage())
+	}
 	return resp
 abort:
 	log.Println("[DOMULTI()] 24")
